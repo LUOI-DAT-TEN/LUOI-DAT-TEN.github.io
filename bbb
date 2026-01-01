@@ -1,1 +1,11 @@
-
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Website đầu tiên</title>
+</head>
+<body>
+  <h1>a</h1>
+  <p>Website này được tạo miễn phí bằng GitHub Pages</p>
+</body>
+</html>
