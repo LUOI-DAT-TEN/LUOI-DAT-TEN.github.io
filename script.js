@@ -639,11 +639,9 @@ document.addEventListener('click', e => {
 
       easing:   'easeOutExpo',
       /* Nhanh lúc đầu, chậm dần — giống vật bay lên rồi chậm lại vì trọng lực. */
-
       complete: () => el.remove()
       /* Khi animation xong: XÓA phần tử khỏi DOM.
          Nếu không xóa: sau nhiều lần click trang chứa hàng nghìn span → lag. */
     });
-
   }
 });

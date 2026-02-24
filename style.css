@@ -674,13 +674,11 @@ footer strong { color: var(--dark-pink); }
   /* Hiện trên hầu hết mọi thứ (dưới scroll-bar là 10000). */
 }
 
-
 /* ─────────────────────────────────────────────────
    RESPONSIVE — Điều chỉnh cho màn hình nhỏ (≤600px)
 ───────────────────────────────────────────────── */
 @media (max-width: 600px) {
   /* @media: chỉ áp dụng CSS bên trong khi màn hình ≤ 600px (điện thoại). */
-
   section {
     margin: 15px 12px;    /* Margin nhỏ hơn để tận dụng không gian hẹp. */
     padding: 22px 18px;
