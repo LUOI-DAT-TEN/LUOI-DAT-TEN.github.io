@@ -42,9 +42,10 @@
    BODY — Nền trang và font chữ mặc định
 ───────────────────────────────────────────────── */
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
   /* Font ưu tiên là Nunito (đã tải từ Google Fonts).
-     Nếu không tải được → dùng sans-serif (font không có chân, mặc định hệ thống). */
+     Fallback chain nếu Nunito không tải được (GitHub Pages, mạng chậm):
+     'Segoe UI' → Windows, Arial → mọi hệ thống, sans-serif → mặc định. */
 
   background: #fce4ec;
   /* Nền toàn trang màu hồng rất nhạt. Thấy ở các khoảng trống
@@ -126,8 +127,10 @@ body {
 
 /* Tiêu đề chính header */
 .header-title {
-  font-family: 'Dancing Script', cursive;
-  /* Font thư pháp chỉ dùng cho tiêu đề lớn. cursive là fallback nếu không tải được. */
+  font-family: 'Dancing Script', 'Brush Script MT', cursive;
+  /* Font thư pháp ưu tiên Dancing Script.
+     'Brush Script MT' → fallback có sẵn trên Windows/macOS nếu Google Fonts lỗi.
+     cursive → fallback cuối cùng của hệ thống. */
 
   font-size: clamp(30px, 7vw, 56px);
   /* clamp(min, ideal, max):
@@ -257,7 +260,7 @@ section.section-pink {
    SECTION TITLE — Tiêu đề với đường kẻ hai bên
 ───────────────────────────────────────────────── */
 .section-title {
-  font-family: 'Dancing Script', cursive;
+  font-family: 'Dancing Script', 'Brush Script MT', cursive;
   font-size: 28px;
   color: var(--dark-pink);
   text-align: center;
@@ -380,7 +383,7 @@ section.section-pink {
 
 .greeting-box p {
   font-size: 18px;
-  font-family: 'Dancing Script', cursive;
+  font-family: 'Dancing Script', 'Brush Script MT', cursive;
   color: var(--text);
   line-height: 1.6;
   position: relative;
@@ -426,7 +429,7 @@ section.section-pink {
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
   transition: background 0.2s;
   /* CHỈ transition background — KHÔNG có transition: transform.
      Nếu có transition:transform, nó sẽ "tranh" quyền kiểm soát transform

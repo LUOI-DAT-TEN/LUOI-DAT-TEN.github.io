@@ -24,7 +24,11 @@
   <!-- Google Fonts: Tải 2 font chữ từ Internet qua CDN của Google.
        Dancing Script → font thư pháp / viết tay, dùng cho các tiêu đề lớn.
        Nunito         → font tròn, dễ đọc, dùng cho nội dung thông thường.
+       display=swap   → trang hiển thị bằng font hệ thống TRƯỚC khi font tải xong,
+                        tránh trang trắng/đen khi mạng chậm (quan trọng trên GitHub Pages).
        Nếu mất internet → trình duyệt tự dùng font mặc định hệ thống (sans-serif). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <!-- Nhúng file CSS riêng biệt. Trình duyệt tải style.css và áp dụng toàn bộ định dạng.
@@ -253,12 +257,18 @@
         </ul>
       </div>
 
-    </div>
+    </div><!-- /.ways-grid -->
 
   </section>
 
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER — Chân trang
+  ═══════════════════════════════════════════ -->
+  <footer>
+
     <p>© 2026 — <strong>Nhóm .... Lớp 12D2 THPT Đoàn Kết</strong></p>
-    <p>✉️ Email đại diện: <a href="mailto:nhom@example.com" style="color:var(--dark-pink)">nhom@example.com</a></p>
+    <p>✉️ Email đại diện: <a href="/cdn-cgi/l/email-protection#442a2c2b2904213c25293428216a272b29" style="color:var(--dark-pink)"><span class="__cf_email__" data-cfemail="5b353334361b3e233a362b373e75383436">[email&#160;protected]</span></a></p>
     <!-- var(--dark-pink): dùng biến CSS khai báo trong :root của style.css. -->
     <p><em>Ngày cập nhật cuối: 08/03/2026</em></p>
 
@@ -310,10 +320,4 @@
   <!-- anime.js từ CDN (Cloudflare, tải rất nhanh toàn cầu).
        BẮT BUỘC đặt TRƯỚC script.js — vì script.js gọi hàm anime() từ thư viện này.
        Nếu đổi thứ tự → lỗi "anime is not defined". -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-
-  <!-- File JS của nhóm. Chứa toàn bộ hiệu ứng: hoa rơi, lời chúc, scroll reveal... -->
-  <script src="script.js"></script>
-
-</body>
-</html>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src

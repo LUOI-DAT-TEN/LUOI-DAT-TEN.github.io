@@ -300,8 +300,13 @@ class Petal {
     ctx.globalAlpha = this.alpha;
     /* Đặt độ trong suốt cho hoa này. */
 
-    ctx.font = `${this.size}px serif`;
-    /* Font để vẽ emoji. serif vì emoji không phụ thuộc font thực sự. */
+    ctx.font = `${this.size}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", serif`;
+    /* Dùng font stack emoji đa nền tảng:
+       "Segoe UI Emoji"    → Windows
+       "Apple Color Emoji" → macOS / iOS
+       "Noto Color Emoji"  → Android / Linux
+       Tránh lỗi GitHub Pages: chỉ dùng "serif" khiến một số hệ thống vẽ
+       ký tự ASCII thay vì emoji màu vì serif không có glyph emoji. */
 
     ctx.translate(x, y);
     /* Dịch chuyển gốc tọa độ canvas đến vị trí hoa.
