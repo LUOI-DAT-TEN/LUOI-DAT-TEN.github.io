@@ -268,7 +268,7 @@
   <footer>
 
     <p>© 2026 — <strong>Nhóm .... Lớp 12D2 THPT Đoàn Kết</strong></p>
-    <p>✉️ Email đại diện: <a href="/cdn-cgi/l/email-protection#442a2c2b2904213c25293428216a272b29" style="color:var(--dark-pink)"><span class="__cf_email__" data-cfemail="5b353334361b3e233a362b373e75383436">[email&#160;protected]</span></a></p>
+    <p>✉️ Email đại diện: <a href="mailto:nhom@example.com" style="color:var(--dark-pink)">nhom@example.com</a></p>
     <!-- var(--dark-pink): dùng biến CSS khai báo trong :root của style.css. -->
     <p><em>Ngày cập nhật cuối: 08/03/2026</em></p>
 
@@ -320,4 +320,13 @@
   <!-- anime.js từ CDN (Cloudflare, tải rất nhanh toàn cầu).
        BẮT BUỘC đặt TRƯỚC script.js — vì script.js gọi hàm anime() từ thư viện này.
        Nếu đổi thứ tự → lỗi "anime is not defined". -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src
+
+  <!-- anime.js từ CDN jsDelivr (ổn định, không bị Cloudflare inject).
+       BẮT BUỘC đặt TRƯỚC script.js. -->
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+  <!-- File JS của nhóm. Chứa toàn bộ hiệu ứng: hoa rơi, lời chúc, scroll reveal... -->
+  <script src="script.js"></script>
+
+</body>
+</html>
