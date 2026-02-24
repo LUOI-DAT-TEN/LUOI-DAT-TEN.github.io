@@ -1,57 +1,700 @@
+/* =====================================================
+   STYLE.CSS — Ngày Quốc Tế Phụ Nữ 8/3
+   Chứa toàn bộ định dạng giao diện: màu sắc, bố cục,
+   animation CSS, và hiệu ứng hover thuần CSS.
+===================================================== */
+
+
+/* ─────────────────────────────────────────────────
+   BIẾN CSS TOÀN CỤC (:root)
+   Khai báo "biến" dùng chung cho cả file.
+   Ưu điểm: muốn đổi màu chỉ sửa 1 chỗ duy nhất.
+   Cú pháp dùng: var(--tên-biến)
+───────────────────────────────────────────────── */
+:root {
+  --pink:       #e91e8c;  /* Hồng chính — dùng cho viền, nút, highlight */
+  --light-pink: #f8a5c2;  /* Hồng sáng — dùng cho đường kẻ trang trí */
+  --pale-pink:  #fde8f0;  /* Hồng rất nhạt — nền hover nút */
+  --soft-pink:  #fce4ec;  /* Hồng cực nhạt — nền body và nền xen kẽ */
+  --dark-pink:  #c2185b;  /* Hồng đậm — tiêu đề, text quan trọng */
+  --white:      #fff;     /* Trắng thuần */
+  --text:       #5a3a4a;  /* Màu chữ chính: nâu tím nhạt, dễ đọc trên nền trắng */
+}
+
+
+/* ─────────────────────────────────────────────────
+   RESET CSS
+   Xóa margin/padding mặc định của trình duyệt.
+   Mỗi trình duyệt (Chrome, Firefox, Safari) có
+   giá trị mặc định khác nhau → reset để đồng nhất.
+───────────────────────────────────────────────── */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* box-sizing: border-box → khi tính width/height,
+     bao gồm cả padding + border. Ví dụ: div width:100px + padding:10px
+     → tổng vẫn là 100px (không phải 120px như mặc định content-box). */
 }
 
+
+/* ─────────────────────────────────────────────────
+   BODY — Nền trang và font chữ mặc định
+───────────────────────────────────────────────── */
 body {
-    min-height: 100vh;
-    background: #000000;
-    overflow: hidden;
-    font-family: 'Arial', sans-serif;
+  font-family: 'Nunito', sans-serif;
+  /* Font ưu tiên là Nunito (đã tải từ Google Fonts).
+     Nếu không tải được → dùng sans-serif (font không có chân, mặc định hệ thống). */
+
+  background: #fce4ec;
+  /* Nền toàn trang màu hồng rất nhạt. Thấy ở các khoảng trống
+     giữa các section và khi cuộn quá cuối trang. */
+
+  color: var(--text);
+  /* Màu chữ mặc định cho mọi nơi. Các phần tử con kế thừa màu này
+     trừ khi tự khai báo color riêng. */
+
+  overflow-x: hidden;
+  /* Ẩn thanh cuộn ngang. Ngăn các animation (translateX) đẩy nội dung
+     ra ngoài làm xuất hiện scrollbar ngang gây xấu. */
 }
 
-.main-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
+
+/* ─────────────────────────────────────────────────
+   HEADER — Phần đầu trang nền gradient hồng
+───────────────────────────────────────────────── */
+.header {
+  background: linear-gradient(135deg, #f48fb1 0%, #e91e8c 40%, #f06292 70%, #ff80ab 100%);
+  /* Nền gradient chéo 135° (từ góc trên trái xuống góc dưới phải).
+     4 điểm màu: hồng nhạt → hồng đậm → hồng trung → hồng sáng.
+     Tạo hiệu ứng ánh sáng chiếu từ góc trên phải. */
+
+  padding: 50px 20px 35px;
+  /* Khoảng đệm bên trong: trên 50px, trái/phải 20px, dưới 35px. */
+
+  text-align: center;
+  /* Căn giữa tất cả nội dung con theo chiều ngang. */
+
+  position: relative;
+  /* Cần thiết để các phần tử con dùng position:absolute
+     định vị tương đối so với header này (không phải toàn trang). */
+
+  overflow: hidden;
+  /* Cắt bỏ phần của các emoji trang trí thò ra ngoài viền header. */
 }
 
-.trail-letter {
-    position: fixed;
-    pointer-events: none;
-    font-size: 24px;
-    font-weight: bold;
-    color: #33ff00;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    animation: fallDown 1.5s ease-out forwards;
-    z-index: 1000;
+/* Họa tiết chấm bi nền header dùng ::before (phần tử giả) */
+.header::before {
+  content: '';
+  /* Bắt buộc có content cho ::before/::after, dù là rỗng. */
+
+  position: absolute;
+  inset: 0;
+  /* inset:0 = top:0; right:0; bottom:0; left:0 → phủ kín header. */
+
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  /* SVG inline được encode thành URL. Vẽ hình tròn trắng nhỏ (r=4)
+     trong suốt 8% trên nền trong suốt. Lặp lại tạo họa tiết chấm bi tinh tế. */
 }
 
-@keyframes fallDown {
-    0% {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotate(0deg);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(100vh) scale(0.8) rotate(360deg);
-    }
+/* 4 trái tim trang trí ở 4 góc header */
+.hearts-deco {
+  position: absolute;
+  /* Thoát khỏi luồng bình thường, định vị tự do trong header (position:relative). */
+
+  font-size: 24px;
+  opacity: 0.5;
+  /* Trong suốt 50% để không che khuất nội dung chính. */
+
+  animation: floatHeart 3s ease-in-out infinite;
+  /* Chạy animation floatHeart, kéo 3s, nhịp ease-in-out (chậm-nhanh-chậm), lặp vô hạn. */
 }
 
-@media (max-width: 768px) {
-    .main-text {
-        font-size: 1.5rem;
-        padding: 15px;
-    }
+/* Vị trí từng trái tim (dùng :nth-child để chọn theo thứ tự) */
+.hearts-deco:nth-child(1) { top: 10px;    left: 5%;   animation-delay: 0s;   }
+.hearts-deco:nth-child(2) { top: 20px;    right: 8%;  animation-delay: .5s;  }
+.hearts-deco:nth-child(3) { bottom: 20px; left: 12%;  animation-delay: 1s;   }
+.hearts-deco:nth-child(4) { bottom: 10px; right: 5%;  animation-delay: 1.5s; }
+/* animation-delay khác nhau → 4 trái tim lơ lửng lệch pha nhau, trông tự nhiên hơn. */
+
+/* Định nghĩa animation floatHeart (dùng chung cho nhiều phần tử) */
+@keyframes floatHeart {
+  0%, 100% { transform: translateY(0);    } /* vị trí gốc ở đầu và cuối */
+  50%       { transform: translateY(-8px); } /* lên 8px ở giữa */
+  /* Tạo chuyển động lơ lửng nhẹ nhàng lên/xuống liên tục. */
+}
+
+/* Tiêu đề chính header */
+.header-title {
+  font-family: 'Dancing Script', cursive;
+  /* Font thư pháp chỉ dùng cho tiêu đề lớn. cursive là fallback nếu không tải được. */
+
+  font-size: clamp(30px, 7vw, 56px);
+  /* clamp(min, ideal, max):
+     - Tối thiểu 30px (điện thoại nhỏ không bị quá nhỏ)
+     - Lý tưởng 7vw = 7% chiều rộng viewport (tự co giãn theo màn hình)
+     - Tối đa 56px (màn hình lớn không bị quá to)
+     → Font tự thích nghi mọi kích thước màn hình. */
+
+  color: #fff;
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+  /* Bóng chữ: 3px phải, 3px xuống, mờ 6px, màu đen trong suốt 20%. Tạo chiều sâu. */
+
+  letter-spacing: 2px;   /* Giãn cách chữ 2px → trông sang trọng hơn. */
+  position: relative;    /* Đảm bảo tiêu đề hiển thị trên ::before (z-index). */
+  z-index: 1;
+  line-height: 1.15;     /* Khoảng cách dòng 1.15 lần font-size. */
+}
+
+.header-subtitle {
+  color: rgba(255,255,255,0.92); /* Trắng trong suốt 92% — nhạt hơn tiêu đề một chút. */
+  font-size: 15px;
+  margin-top: 10px;
+  font-style: italic;    /* Nghiêng. */
+  position: relative;
+  z-index: 1;
+}
+
+.heart-row {
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center; /* Căn giữa các tim theo chiều ngang. */
+  gap: 8px;                /* Khoảng cách 8px giữa các tim. */
+  font-size: 18px;
+}
+
+.envelope-deco {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 42px;
+  opacity: 0.6;
+  z-index: 1;
+  animation: floatHeart 2.5s ease-in-out infinite;
+  /* Dùng cùng animation nhưng 2.5s (khác với 3s của hearts-deco)
+     → không đồng bộ, tạo cảm giác sinh động đa dạng. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   NAV — Thanh điều hướng cố định
+───────────────────────────────────────────────── */
+nav {
+  background: linear-gradient(90deg, #e91e8c, #d81b60);
+  /* Gradient ngang: hồng sáng → hồng đậm. */
+
+  display: flex;
+  justify-content: center; /* Căn giữa các nút nav. */
+  gap: 6px;                /* Khoảng cách giữa các nút. */
+  padding: 12px 10px;
+  flex-wrap: wrap;
+  /* flex-wrap: wrap → trên màn hình nhỏ, nút tự xuống dòng thay vì bị tràn. */
+
+  position: sticky;
+  /* sticky: cuộn bình thường đến khi đụng top:0 thì "dính" lại không cuộn lên nữa. */
+  top: 0;
+
+  z-index: 100;
+  /* z-index:100 → nav hiển thị ĐÈ LÊN section bên dưới khi cuộn.
+     Cần position khác static mới dùng được z-index. */
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  /* Bóng đổ xuống dưới nav tạo độ sâu, phân biệt nav với nội dung. */
+}
+
+nav a {
+  color: white;
+  text-decoration: none;   /* Bỏ gạch chân mặc định của thẻ <a>. */
+  padding: 7px 20px;
+  border-radius: 25px;     /* Bo tròn hoàn toàn → hình viên thuốc (pill shape). */
+  font-size: 14px;
+  font-weight: 700;        /* In đậm. */
+  background: rgba(255,255,255,0.18);
+  /* Nền trắng trong suốt 18% → kính mờ trên nền hồng. */
+
+  transition: background 0.2s;
+  /* Chuyển màu nền mượt trong 0.2s khi hover. */
+}
+
+nav a:hover {
+  background: rgba(255,255,255,0.35);
+  /* Hover: trắng đậm hơn (35%) → nút sáng lên. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   SECTION — Khối nội dung chính
+───────────────────────────────────────────────── */
+section {
+  max-width: 720px;
+  /* Giới hạn chiều rộng tối đa. Trên màn hình rộng không bị kéo dài quá. */
+
+  margin: 25px auto;
+  /* margin auto hai bên → tự căn giữa theo chiều ngang. */
+
+  background: white;
+  border-radius: 18px;     /* Bo góc 18px — mềm mại, hiện đại. */
+  padding: 30px 35px;      /* Khoảng đệm bên trong: trên/dưới 30px, trái/phải 35px. */
+
+  box-shadow: 0 4px 20px rgba(233,30,140,0.1);
+  /* Bóng đổ: 0 ngang, 4px xuống, mờ 20px, màu hồng trong suốt 10%.
+     Tạo cảm giác section "nổi" lên khỏi nền. */
+
+  position: relative;
+  /* Cần thiết cho các phần tử con dùng position:absolute. */
+}
+
+section.section-pink {
+  background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+  /* Ghi đè background trắng bằng gradient hồng nhạt.
+     Tạo sự xen kẽ màu trắng / hồng giữa các section. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   SECTION TITLE — Tiêu đề với đường kẻ hai bên
+───────────────────────────────────────────────── */
+.section-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px;
+  color: var(--dark-pink);
+  text-align: center;
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc (đường kẻ ngang hàng với chữ). */
+  justify-content: center;
+  gap: 10px;           /* Khoảng cách giữa đường kẻ và chữ. */
+}
+
+/* Đường kẻ bên TRÁI tiêu đề */
+.section-title::before {
+  content: '';         /* Phần tử giả không có nội dung. */
+  flex: 1;             /* Chiếm hết không gian còn lại → đường kẻ kéo dài đến chữ. */
+  height: 1.5px;
+  background: linear-gradient(to right, transparent, #f48fb1);
+  /* Gradient từ trong suốt → hồng. Đường kẻ mờ dần từ mép trái vào đến chữ. */
+}
+
+/* Đường kẻ bên PHẢI tiêu đề */
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1.5px;
+  background: linear-gradient(to left, transparent, #f48fb1);
+  /* Ngược lại: hồng → trong suốt. Mờ dần từ chữ ra mép phải. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   LỊCH SỬ — Style cho đoạn văn trong section lịch sử
+───────────────────────────────────────────────── */
+#lichsu p {
+  line-height: 1.8;     /* Khoảng cách dòng 1.8 lần font → dễ đọc hơn. */
+  margin-bottom: 14px;  /* Khoảng cách giữa các đoạn văn. */
+  font-size: 14.5px;
+}
+
+
+/* ─────────────────────────────────────────────────
+   CARDS — Grid 3 cột chứa 3 card ý nghĩa
+───────────────────────────────────────────────── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* Tạo lưới 3 cột bằng nhau. 1fr = 1 phần của không gian còn lại.
+     3 card tự điền vào 3 cột này. */
+
+  gap: 15px;
+  /* Khoảng cách 15px giữa tất cả các ô (cả hàng lẫn cột). */
+
+  margin: 20px 0;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 15px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(233,30,140,0.08); /* Bóng đổ hồng rất nhạt. */
+  border: 1.5px solid #f8bbd9;                  /* Viền hồng nhạt. */
+  cursor: default;                               /* Con trỏ mũi tên bình thường (không phải tay). */
+}
+
+.card-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  display: block;
+  /* display:block → emoji xuống dòng riêng, không inline với chữ. */
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--dark-pink);
+}
+
+.card p {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #7a5060; /* Màu chữ nhạt hơn để phân biệt với tiêu đề. */
+}
+
+/* Hộp tóm tắt bên dưới 3 card */
+.summary-box {
+  background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+  border-radius: 12px;
+  padding: 18px 22px;
+  font-weight: 700;
+  font-size: 14.5px;
+  line-height: 1.7;
+  text-align: center;
+  color: var(--dark-pink);
+  margin-top: 18px;
+  border: 2px solid #f48fb1;
+}
+
+
+/* ─────────────────────────────────────────────────
+   GREETING BOX — Khung chứa lời chúc
+───────────────────────────────────────────────── */
+.greeting-box {
+  background: white;
+  border: 2px dashed #f48fb1;
+  /* Viền nét đứt → trông như khung thiệp viết tay. */
+
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin: 15px 0;
+  position: relative; /* Để tulip-deco dùng position:absolute bên trong. */
+  overflow: hidden;   /* Cắt phần tulip thò ra ngoài góc. */
+
+  perspective: 600px;
+  /* BẬT không gian 3D cho phần tử này. Khi anime.js dùng rotateX trên
+     text con, perspective xác định "khoảng cách mắt đến màn hình".
+     600px = nhìn gần vừa phải, hiệu ứng lật trang thấy rõ chiều sâu. */
+}
+
+.greeting-box p {
+  font-size: 18px;
+  font-family: 'Dancing Script', cursive;
+  color: var(--text);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;         /* Hiển thị trên tulip-deco ở góc. */
+}
+
+.tulip-deco {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  /* Đặt ở góc dưới phải, thò ra ngoài -10px để cắt bớt bởi overflow:hidden. */
+  font-size: 50px;
+}
+
+
+/* ─────────────────────────────────────────────────
+   NÚT LỜI CHÚC MỚI
+   Kỹ thuật quan trọng: tách wrapper và button.
+   - .btn-spinner (div): bị anime.js xoay +360°
+   - .btn (button):      bị anime.js xoay -360°
+   → chữ bên trong đứng yên (hai rotation triệt tiêu nhau)
+   → chỉ thấy hiệu ứng co/giãn đẹp của nút.
+───────────────────────────────────────────────── */
+.btn-wrap {
+  display: flex;
+  justify-content: center; /* Căn giữa nút theo chiều ngang. */
+  margin-top: 20px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  /* BẮT BUỘC: inline-block để CSS transform (rotate, scale) hoạt động đúng.
+     block thuần không nhận transform theo một số quy tắc CSS cũ. */
+}
+
+.btn {
+  display: block;
+  background: white;
+  border: 2.5px solid #f48fb1;
+  color: var(--dark-pink);
+  padding: 10px 28px;
+  border-radius: 30px;  /* Viên thuốc. */
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: background 0.2s;
+  /* CHỈ transition background — KHÔNG có transition: transform.
+     Nếu có transition:transform, nó sẽ "tranh" quyền kiểm soát transform
+     với anime.js, làm hiệu ứng rotate bị giật hoặc không chạy. */
+}
+
+.btn:hover {
+  background: var(--pale-pink); /* Nền hồng nhạt khi hover. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   WAYS GRID — Lưới 2×2 cách kỷ niệm
+───────────────────────────────────────────────── */
+.ways-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 cột bằng nhau. */
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.way-item h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark-pink);
+  margin-bottom: 8px;
+}
+
+.way-item ul {
+  list-style: disc;     /* Danh sách dạng chấm tròn. */
+  padding-left: 18px;   /* Thụt vào 18px để chấm tròn hiển thị. */
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: #7a5060;
+}
+
+
+/* ─────────────────────────────────────────────────
+   MEMBER DROPDOWN — Danh sách thành viên nhóm
+   Toàn bộ hiển thị/ẩn bằng CSS :hover (không cần JS).
+───────────────────────────────────────────────── */
+.member-trigger-wrap {
+  position: relative;
+  /* Cần để dropdown con dùng position:absolute định vị tương đối với wrap này. */
+
+  display: inline-block;
+  /* inline-block → wrap chỉ rộng bằng nội dung con, không kéo dài full width.
+     Quan trọng: dropdown absolute sẽ đặt so với wrap này. */
+
+  margin-top: 10px;
+}
+
+.member-trigger {
+  cursor: pointer;        /* Con trỏ bàn tay khi hover. */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dark-pink);
+  font-size: 12px;
+  user-select: none;      /* Không cho chọn văn bản khi click nhiều lần. */
+  padding: 4px 0;
+}
+
+.trigger-hint {
+  font-size: 14px;
+  color: var(--pink);
+  transition: transform 0.3s ease; /* Chuyển động xoay mượt 0.3s. */
+  display: inline-block;
+  /* inline-block để CSS transform (rotate) áp dụng được cho <span>. */
+}
+
+/* Khi hover vào wrap, mũi tên ▾ xoay 90° thành ► */
+.member-trigger-wrap:hover .trigger-hint {
+  transform: rotate(90deg);
+}
+
+/* DROPDOWN BOX — Hiện bên PHẢI chữ "Thành viên nhóm" */
+.member-dropdown {
+  position: absolute;
+  top: 0;                         /* Ngang hàng với chữ trigger. */
+  left: calc(100% + 12px);
+  /* 100% = chiều rộng của .member-trigger-wrap.
+     +12px = khoảng cách thở giữa chữ và dropdown.
+     Công thức này luôn đặt dropdown sát phải bất kể font to nhỏ. */
+
+  background: white;
+  border: 1.5px solid #f8bbd9;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(233,30,140,0.22);
+  padding: 8px 6px;
+  min-width: 240px;               /* Chiều rộng tối thiểu đủ hiển thị tên dài. */
+  z-index: 500;                   /* Hiện trên các phần tử khác. */
+
+  /* TRẠNG THÁI ẨN mặc định */
+  pointer-events: none;           /* Không nhận click/hover khi đang ẩn. */
+  opacity: 0;                     /* Trong suốt hoàn toàn (ẩn). */
+  transform: translateX(-10px) scale(0.95);
+  /* Dịch trái 10px + thu nhỏ 95% → khi hiện ra sẽ có hiệu ứng "bay ra". */
+
+  transform-origin: top left;     /* Điểm neo để scale/translate. */
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  /* Chuyển mượt opacity và transform trong 0.22s khi hover. */
+}
+
+/* TRẠNG THÁI HIỆN khi hover vào wrap */
+.member-trigger-wrap:hover .member-dropdown {
+  opacity: 1;                     /* Hiện hoàn toàn. */
+  transform: translateX(0) scale(1); /* Về vị trí + kích thước gốc. */
+  pointer-events: auto;           /* Cho phép tương tác. */
+}
+
+/* Mũi tên ◄ trỏ vào chữ (tạo bằng border CSS thuần) */
+.member-dropdown::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: -7px;                     /* Thò ra ngoài bên trái 7px. */
+  border: 7px solid transparent;  /* 4 border đều trong suốt. */
+  border-right-color: #f8bbd9;    /* CHỈ border phải có màu → tạo hình tam giác trỏ trái ◄. */
+}
+
+/* Mũi tên trắng bên trong (tạo viền 2 lớp màu) */
+.member-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 13px;                      /* 1px dưới hơn ::before để căn giữa theo border. */
+  left: -5px;                     /* 2px vào trong so với ::before. */
+  border: 6px solid transparent;
+  border-right-color: white;      /* Tam giác trắng → hiệu ứng viền mũi tên. */
+}
+
+/* Mỗi hàng thành viên */
+.member-item {
+  display: flex;
+  align-items: center;  /* Căn giữa dọc: số, emoji, tên, badge ngang hàng. */
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  transition: background 0.15s;
+}
+
+.member-item:hover {
+  background: #fce4ec;  /* Nền hồng nhạt khi hover từng hàng. */
+}
+
+.m-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #cca0b0;        /* Hồng xám nhạt, phụ trợ, không nổi bằng tên. */
+  min-width: 18px;       /* Chiều rộng tối thiểu để 01, 02... thẳng hàng. */
+}
+
+.m-emoji { font-size: 16px; }
+
+.m-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;               /* Chiếm hết khoảng trống còn lại → đẩy badge sang phải. */
+}
+
+.m-role {
+  font-size: 10.5px;
+  color: white;
+  background: linear-gradient(90deg, #e91e8c, #c2185b);
+  /* Badge gradient hồng → hồng đậm, chữ trắng. */
+  padding: 2px 8px;
+  border-radius: 10px;   /* Bo tròn thành hình viên thuốc nhỏ. */
+  font-weight: 600;
+  white-space: nowrap;   /* Không xuống dòng dù tên vai trò dài. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   FOOTER — Chân trang
+───────────────────────────────────────────────── */
+footer {
+  max-width: 720px;
+  margin: 0 auto 30px; /* Căn giữa, margin dưới 30px. */
+  padding: 15px 35px;
+  font-size: 12px;
+  color: #a07080;       /* Màu chữ footer nhạt hơn nội dung chính. */
+  position: relative;   /* Để footer-gift dùng position:absolute. */
+}
+
+footer .footer-gift {
+  position: absolute;
+  right: 20px;
+  bottom: 0;
+  font-size: 50px;
+  opacity: 0.7;
+  animation: floatHeart 2.5s ease-in-out infinite;
+  /* Dùng lại animation floatHeart — nơ lơ lửng lên xuống. */
+}
+
+footer p      { margin-bottom: 4px; }
+footer strong { color: var(--dark-pink); }
+
+
+/* ─────────────────────────────────────────────────
+   SCROLL PROGRESS BAR — Thanh tiến trình đọc bài
+───────────────────────────────────────────────── */
+#scroll-bar {
+  position: fixed;
+  /* fixed: luôn cố định trên màn hình dù cuộn trang. */
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0%;
+  /* Ban đầu width=0. JS tăng dần lên 100% theo mức cuộn. */
+
+  background: linear-gradient(90deg, #ff80ab, #e91e8c, #ad1457);
+  /* Gradient hồng sáng → hồng → đỏ hồng. Trông như "đường máu". */
+
+  z-index: 10000;
+  /* Cao nhất trang, hiển thị trên tất cả mọi thứ kể cả nav (z-index:100). */
+
+  border-radius: 0 4px 4px 0;
+  /* Bo góc bên phải → đầu thanh tiến trình trông mềm mại hơn. */
+
+  box-shadow: 0 0 8px rgba(233,30,140,0.5);
+  /* Bóng sáng (glow) màu hồng xung quanh thanh → hiệu ứng neon nhẹ. */
+}
+
+
+/* ─────────────────────────────────────────────────
+   CANVAS HOA RƠI
+───────────────────────────────────────────────── */
+#petal-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Phủ toàn bộ màn hình. */
+
+  pointer-events: none;
+  /* QUAN TRỌNG: canvas ở trên cùng nhưng không chặn click/hover.
+     Người dùng vẫn tương tác bình thường với nội dung bên dưới. */
+
+  z-index: 9999;
+  /* Hiện trên hầu hết mọi thứ (dưới scroll-bar là 10000). */
+}
+
+
+/* ─────────────────────────────────────────────────
+   RESPONSIVE — Điều chỉnh cho màn hình nhỏ (≤600px)
+───────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* @media: chỉ áp dụng CSS bên trong khi màn hình ≤ 600px (điện thoại). */
+
+  section {
+    margin: 15px 12px;    /* Margin nhỏ hơn để tận dụng không gian hẹp. */
+    padding: 22px 18px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    /* 3 cột → 1 cột: 3 card xếp dọc thay vì ngang → dễ đọc trên điện thoại. */
+  }
+
+  .ways-grid {
+    grid-template-columns: 1fr;
+    /* 2 cột → 1 cột: tương tự. */
+  }
+
+  .header-title {
+    font-size: 30px;
+    /* Ghi đè clamp(), fix cứng 30px trên điện thoại nếu cần. */
+  }
 }
