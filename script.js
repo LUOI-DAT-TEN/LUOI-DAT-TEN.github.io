@@ -6,164 +6,139 @@
 
 
 /* ═══════════════════════════════════════════════════════════════
-   0. BẢO VỆ TRANG — Chuyển trang khi phát hiện DevTools
-   Gồm 4 lớp bảo vệ:
-   A. Chặn phím F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-   B. Chặn chuột phải (context menu "Kiểm tra")
-   C. Phát hiện DevTools qua kích thước cửa sổ
-   D. Phát hiện DevTools qua debugger timing
+   0. BẢO VỆ TRANG — Hoạt động trên cả localhost lẫn GitHub Pages
+   Gồm 4 lớp:
+   A. Chặn phím tắt  (F12, Ctrl+Shift+I/J/C, Ctrl+U)
+   B. Chặn chuột phải
+   C. Phát hiện DevTools qua kích thước cửa sổ (resize + polling)
+   D. Phát hiện DevTools qua console.log getter trap
 ═══════════════════════════════════════════════════════════════ */
 (function () {
 
-  /* ── Đích đến khi bị phát hiện ── */
   const REDIRECT_URL = 'https://www.google.com';
-
-  /* Biến trạng thái: chỉ redirect 1 lần duy nhất */
   let redirected = false;
 
   function redirectUser() {
     if (redirected) return;
     redirected = true;
-    /* location.replace(): thay thế lịch sử hiện tại, nhấn Back cũng không quay lại được. */
     window.location.replace(REDIRECT_URL);
   }
 
 
   /* ══════════════════════════════════════════════
-     A. CHẶN PHÍM TẮT MỞ DEVTOOLS
+     A. CHẶN PHÍM TẮT — useCapture:true để bắt
+        trước khi trình duyệt xử lý
   ══════════════════════════════════════════════ */
   document.addEventListener('keydown', function (e) {
+    const ctrl = e.ctrlKey || e.metaKey;
 
-    /* F12 — phím mở DevTools nhanh nhất */
+    /* F12 */
     if (e.key === 'F12') {
-      e.preventDefault();   /* Ngăn trình duyệt xử lý phím này */
-      e.stopPropagation();  /* Không cho sự kiện lan lên các handler khác */
-      redirectUser();
-      return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      redirectUser(); return;
     }
-
-    /* Ctrl+Shift+I (Windows/Linux) hoặc Cmd+Option+I (Mac) — mở tab Elements/Console */
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
-      e.preventDefault();
-      e.stopPropagation();
-      redirectUser();
-      return;
+    /* Ctrl+Shift+I  /  Cmd+Option+I */
+    if (ctrl && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      redirectUser(); return;
     }
-
-    /* Ctrl+Shift+J (Windows/Linux) hoặc Cmd+Option+J (Mac) — mở tab Console trực tiếp */
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
-      e.preventDefault();
-      e.stopPropagation();
-      redirectUser();
-      return;
+    /* Ctrl+Shift+J  /  Cmd+Option+J */
+    if (ctrl && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      redirectUser(); return;
     }
-
-    /* Ctrl+Shift+C — mở Inspector (chọn phần tử) */
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-      e.preventDefault();
-      e.stopPropagation();
-      redirectUser();
-      return;
+    /* Ctrl+Shift+C */
+    if (ctrl && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      redirectUser(); return;
     }
-
-    /* Ctrl+U — xem mã nguồn trang (View Source) */
-    if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-      /* Không redirect khi xem source vì chỉ là xem HTML tĩnh,
-         nhưng vẫn chặn để bảo vệ code. */
+    /* Ctrl+U — xem nguồn */
+    if (ctrl && (e.key === 'u' || e.key === 'U')) {
+      e.preventDefault(); e.stopImmediatePropagation(); return;
     }
-
   }, true);
-  /* true = useCapture: lắng nghe ở pha capture (trước khi phần tử nhận sự kiện).
-     Đảm bảo handler này chạy TRƯỚC mọi handler khác → preventDefault() có hiệu lực. */
+  /* stopImmediatePropagation(): mạnh hơn stopPropagation —
+     ngăn cả các handler khác trên cùng phần tử, không chỉ cha. */
 
 
   /* ══════════════════════════════════════════════
-     B. CHẶN CHUỘT PHẢI (Context Menu)
-     Ngăn menu "Kiểm tra / Inspect Element" hiện ra.
+     B. CHẶN CHUỘT PHẢI
   ══════════════════════════════════════════════ */
   document.addEventListener('contextmenu', function (e) {
     e.preventDefault();
-    /* preventDefault() ngăn menu chuột phải hiện lên.
-       Không redirect ngay vì click chuột phải có nhiều mục đích hợp lệ
-       (copy text, lưu ảnh...). Chỉ ngăn menu để không thấy "Kiểm tra". */
+    e.stopImmediatePropagation();
   }, true);
 
 
   /* ══════════════════════════════════════════════
-     C. PHÁT HIỆN DEVTOOLS QUA KÍCH THƯỚC CỬA SỔ
-     Khi DevTools mở dạng dock (gắn bên/dưới),
-     innerWidth hoặc innerHeight bị thu hẹp so với outerWidth/Height.
+     C. PHÁT HIỆN QUA KÍCH THƯỚC CỬA SỔ
+     Nguyên lý: DevTools dock làm viewport thu hẹp.
+     Dùng cả resize event + setInterval để bắt chắc.
+     
+     Lý do không dùng debugger trên GitHub Pages:
+     Chrome/Firefox trên HTTPS tắt debugger-pause
+     trong Worker và strict-mode → không đáng tin.
   ══════════════════════════════════════════════ */
+
+  /* Ghi nhận kích thước ban đầu sau khi trang load xong */
+  var baseW = window.outerWidth;
+  var baseH = window.outerHeight;
+
   function checkBySize() {
-    const wDiff = window.outerWidth  - window.innerWidth;
-    const hDiff = window.outerHeight - window.innerHeight;
-    /* Ngưỡng 160px:
-       - Đủ lớn để bỏ qua chênh lệch bình thường (thanh địa chỉ, taskbar ~80-120px)
-       - DevTools dock chiếm ít nhất 200-300px → chắc chắn vượt ngưỡng 160px */
-    if (wDiff > 160 || hDiff > 160) {
+    var wDiff = window.outerWidth  - window.innerWidth;
+    var hDiff = window.outerHeight - window.innerHeight;
+    /* Ngưỡng 200px: an toàn hơn 160px trên GitHub Pages
+       vì một số trình duyệt tính outerHeight gồm cả thanh bookmark bar.
+       DevTools dock tối thiểu chiếm 250-300px → vẫn vượt ngưỡng. */
+    if (wDiff > 200 || hDiff > 200) {
       redirectUser();
     }
   }
 
+  /* Bắt ngay khi resize — người dùng kéo DevTools ra */
+  window.addEventListener('resize', function () {
+    checkBySize();
+  }, true);
 
-  /* ══════════════════════════════════════════════
-     D. PHÁT HIỆN DEVTOOLS QUA DEBUGGER TIMING
-     Khi DevTools mở (tab Sources), lệnh "debugger"
-     làm trình duyệt dừng lại → tốn >100ms.
-     Khi DevTools đóng → thực thi gần như tức thì <5ms.
-  ══════════════════════════════════════════════ */
-  function checkByDebugger() {
-    const t0 = performance.now();
-    // eslint-disable-next-line no-debugger
-    debugger;
-    /* Dòng này vô hại khi DevTools đóng — trình duyệt bỏ qua.
-       Khi DevTools mở tab Sources: execution dừng ở đây → elapsed tăng vọt. */
-    if (performance.now() - t0 > 100) {
-      redirectUser();
-    }
-  }
+  /* Polling dự phòng mỗi 800ms — bắt DevTools undocked (cửa sổ riêng),
+     trường hợp resize event không fire (ví dụ undock bằng phím). */
+  setInterval(checkBySize, 800);
+
+  /* Kiểm tra ngay khi load — bắt DevTools đã mở sẵn từ trước */
+  checkBySize();
 
 
   /* ══════════════════════════════════════════════
-     E. PHÁT HIỆN QUA toString() GETTER TRAP
-     Khi DevTools Console mở và log object,
-     trình duyệt tự gọi getter để hiển thị giá trị → bắt được.
+     D. GETTER TRAP — Hoạt động ổn trên GitHub Pages
+     vì chỉ dùng Object.defineProperty + console.log,
+     không phụ thuộc vào debugger hay HTTPS mode.
+
+     Cơ chế: Chrome/Firefox, khi DevTools Console mở
+     và đang active, sẽ EAGER-EVALUATE object được log
+     → tự gọi getter để lấy giá trị hiển thị.
+     Khi Console đóng: console.log chạy nhưng không
+     có ai đọc → getter KHÔNG bị gọi.
   ══════════════════════════════════════════════ */
-  const trap = new Image();
-  Object.defineProperty(trap, 'id', {
-    get() {
-      /* getter này bị gọi khi Console đang active và render object */
-      redirectUser();
+  var _trap = new Image();
+  var _trapFired = false;
+
+  Object.defineProperty(_trap, 'id', {
+    get: function () {
+      if (!_trapFired) {
+        _trapFired = true;
+        /* Delay nhỏ 50ms để tránh false-positive lúc trang mới load */
+        setTimeout(redirectUser, 50);
+      }
       return '';
     }
   });
 
-  function checkByConsole() {
-    /* In trap ra console. Nếu Console đang mở → getter bị trigger. */
-    console.log('%c', trap);
-  }
-
-
-  /* ══════════════════════════════════════════════
-     CHẠY KIỂM TRA
-  ══════════════════════════════════════════════ */
-
-  /* Kiểm tra ngay lập tức khi trang vừa tải —
-     bắt trường hợp DevTools đã mở từ trước. */
-  checkBySize();
-  checkByDebugger();
-
-  /* Kiểm tra liên tục mỗi 1 giây —
-     bắt trường hợp người dùng mở DevTools SAU khi trang đã tải.
-     Không dùng interval <500ms: checkByDebugger làm chậm trang khi DevTools mở. */
+  /* Dùng setInterval riêng cho trap với tần suất khác (1200ms)
+     để tránh đồng bộ với checkBySize → phủ rộng hơn */
   setInterval(function () {
-    checkBySize();
-    checkByDebugger();
-    checkByConsole();
-  }, 1000);
+    _trap.id; /* Đọc trực tiếp thay vì qua console.log — hoạt động tốt hơn trên Firefox */
+    console.log(_trap);
+  }, 1200);
 
 })();
 /* ─── Kết thúc IIFE bảo vệ trang ─── */
