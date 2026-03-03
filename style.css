@@ -693,7 +693,6 @@ footer strong { color: var(--dark-pink); }
     grid-template-columns: 1fr;
     /* 2 cột → 1 cột: tương tự. */
   }
-
   .header-title {
     font-size: 30px;
     /* Ghi đè clamp(), fix cứng 30px trên điện thoại nếu cần. */

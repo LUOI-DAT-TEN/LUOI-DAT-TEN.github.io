@@ -5,6 +5,170 @@
 ===================================================== */
 
 
+/* ═══════════════════════════════════════════════════════════════
+   0. BẢO VỆ TRANG — Chuyển trang khi phát hiện DevTools
+   Gồm 4 lớp bảo vệ:
+   A. Chặn phím F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+   B. Chặn chuột phải (context menu "Kiểm tra")
+   C. Phát hiện DevTools qua kích thước cửa sổ
+   D. Phát hiện DevTools qua debugger timing
+═══════════════════════════════════════════════════════════════ */
+(function () {
+
+  /* ── Đích đến khi bị phát hiện ── */
+  const REDIRECT_URL = 'https://www.google.com';
+
+  /* Biến trạng thái: chỉ redirect 1 lần duy nhất */
+  let redirected = false;
+
+  function redirectUser() {
+    if (redirected) return;
+    redirected = true;
+    /* location.replace(): thay thế lịch sử hiện tại, nhấn Back cũng không quay lại được. */
+    window.location.replace(REDIRECT_URL);
+  }
+
+
+  /* ══════════════════════════════════════════════
+     A. CHẶN PHÍM TẮT MỞ DEVTOOLS
+  ══════════════════════════════════════════════ */
+  document.addEventListener('keydown', function (e) {
+
+    /* F12 — phím mở DevTools nhanh nhất */
+    if (e.key === 'F12') {
+      e.preventDefault();   /* Ngăn trình duyệt xử lý phím này */
+      e.stopPropagation();  /* Không cho sự kiện lan lên các handler khác */
+      redirectUser();
+      return;
+    }
+
+    /* Ctrl+Shift+I (Windows/Linux) hoặc Cmd+Option+I (Mac) — mở tab Elements/Console */
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
+      e.preventDefault();
+      e.stopPropagation();
+      redirectUser();
+      return;
+    }
+
+    /* Ctrl+Shift+J (Windows/Linux) hoặc Cmd+Option+J (Mac) — mở tab Console trực tiếp */
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
+      e.preventDefault();
+      e.stopPropagation();
+      redirectUser();
+      return;
+    }
+
+    /* Ctrl+Shift+C — mở Inspector (chọn phần tử) */
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+      e.preventDefault();
+      e.stopPropagation();
+      redirectUser();
+      return;
+    }
+
+    /* Ctrl+U — xem mã nguồn trang (View Source) */
+    if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+      /* Không redirect khi xem source vì chỉ là xem HTML tĩnh,
+         nhưng vẫn chặn để bảo vệ code. */
+    }
+
+  }, true);
+  /* true = useCapture: lắng nghe ở pha capture (trước khi phần tử nhận sự kiện).
+     Đảm bảo handler này chạy TRƯỚC mọi handler khác → preventDefault() có hiệu lực. */
+
+
+  /* ══════════════════════════════════════════════
+     B. CHẶN CHUỘT PHẢI (Context Menu)
+     Ngăn menu "Kiểm tra / Inspect Element" hiện ra.
+  ══════════════════════════════════════════════ */
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    /* preventDefault() ngăn menu chuột phải hiện lên.
+       Không redirect ngay vì click chuột phải có nhiều mục đích hợp lệ
+       (copy text, lưu ảnh...). Chỉ ngăn menu để không thấy "Kiểm tra". */
+  }, true);
+
+
+  /* ══════════════════════════════════════════════
+     C. PHÁT HIỆN DEVTOOLS QUA KÍCH THƯỚC CỬA SỔ
+     Khi DevTools mở dạng dock (gắn bên/dưới),
+     innerWidth hoặc innerHeight bị thu hẹp so với outerWidth/Height.
+  ══════════════════════════════════════════════ */
+  function checkBySize() {
+    const wDiff = window.outerWidth  - window.innerWidth;
+    const hDiff = window.outerHeight - window.innerHeight;
+    /* Ngưỡng 160px:
+       - Đủ lớn để bỏ qua chênh lệch bình thường (thanh địa chỉ, taskbar ~80-120px)
+       - DevTools dock chiếm ít nhất 200-300px → chắc chắn vượt ngưỡng 160px */
+    if (wDiff > 160 || hDiff > 160) {
+      redirectUser();
+    }
+  }
+
+
+  /* ══════════════════════════════════════════════
+     D. PHÁT HIỆN DEVTOOLS QUA DEBUGGER TIMING
+     Khi DevTools mở (tab Sources), lệnh "debugger"
+     làm trình duyệt dừng lại → tốn >100ms.
+     Khi DevTools đóng → thực thi gần như tức thì <5ms.
+  ══════════════════════════════════════════════ */
+  function checkByDebugger() {
+    const t0 = performance.now();
+    // eslint-disable-next-line no-debugger
+    debugger;
+    /* Dòng này vô hại khi DevTools đóng — trình duyệt bỏ qua.
+       Khi DevTools mở tab Sources: execution dừng ở đây → elapsed tăng vọt. */
+    if (performance.now() - t0 > 100) {
+      redirectUser();
+    }
+  }
+
+
+  /* ══════════════════════════════════════════════
+     E. PHÁT HIỆN QUA toString() GETTER TRAP
+     Khi DevTools Console mở và log object,
+     trình duyệt tự gọi getter để hiển thị giá trị → bắt được.
+  ══════════════════════════════════════════════ */
+  const trap = new Image();
+  Object.defineProperty(trap, 'id', {
+    get() {
+      /* getter này bị gọi khi Console đang active và render object */
+      redirectUser();
+      return '';
+    }
+  });
+
+  function checkByConsole() {
+    /* In trap ra console. Nếu Console đang mở → getter bị trigger. */
+    console.log('%c', trap);
+  }
+
+
+  /* ══════════════════════════════════════════════
+     CHẠY KIỂM TRA
+  ══════════════════════════════════════════════ */
+
+  /* Kiểm tra ngay lập tức khi trang vừa tải —
+     bắt trường hợp DevTools đã mở từ trước. */
+  checkBySize();
+  checkByDebugger();
+
+  /* Kiểm tra liên tục mỗi 1 giây —
+     bắt trường hợp người dùng mở DevTools SAU khi trang đã tải.
+     Không dùng interval <500ms: checkByDebugger làm chậm trang khi DevTools mở. */
+  setInterval(function () {
+    checkBySize();
+    checkByDebugger();
+    checkByConsole();
+  }, 1000);
+
+})();
+/* ─── Kết thúc IIFE bảo vệ trang ─── */
+
+
 /* ═══════════════════════════════════════════════════════
    1. HEADER ENTRANCE — Chuỗi animation khi trang tải xong
    anime.timeline() tạo các animation chạy NỐI TIẾP nhau.
@@ -639,9 +803,11 @@ document.addEventListener('click', e => {
 
       easing:   'easeOutExpo',
       /* Nhanh lúc đầu, chậm dần — giống vật bay lên rồi chậm lại vì trọng lực. */
+
       complete: () => el.remove()
       /* Khi animation xong: XÓA phần tử khỏi DOM.
          Nếu không xóa: sau nhiều lần click trang chứa hàng nghìn span → lag. */
     });
+
   }
 });

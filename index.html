@@ -1,26 +1,9 @@
 <!DOCTYPE html>
-<!-- DOCTYPE: Khai báo đây là tài liệu HTML5. Phải ở dòng đầu tiên, không có thẻ nào trước nó. -->
-
 <html lang="vi">
-<!-- lang="vi": Báo trình duyệt và Google biết trang dùng tiếng Việt.
-     Hỗ trợ tính năng đọc màn hình (screen reader) phát âm đúng giọng Việt. -->
-
 <head>
-<!-- <head>: Phần "đầu" ẩn — không hiển thị ra trang. Chứa cấu hình kỹ thuật và liên kết tài nguyên. -->
-
   <meta charset="UTF-8">
-  <!-- charset="UTF-8": Quy định bộ mã ký tự Unicode.
-       Nhờ dòng này trang hiển thị đúng tiếng Việt có dấu (ă ơ ư...) và emoji (🌸💗).
-       Thiếu dòng này → chữ Việt bị vỡ thành ký tự lạ. -->
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- viewport: Cấu hình hiển thị trên điện thoại / tablet.
-       width=device-width → chiều rộng trang bằng đúng chiều rộng màn hình thiết bị.
-       initial-scale=1.0  → không zoom in/out tự động khi mở trang. -->
-
   <title>Ngày Quốc Tế Phụ Nữ 8/3</title>
-  <!-- <title>: Văn bản hiện trên TAB trình duyệt và kết quả tìm kiếm Google. -->
-
   <!-- Google Fonts: Tải 2 font chữ từ Internet qua CDN của Google.
        Dancing Script → font thư pháp / viết tay, dùng cho các tiêu đề lớn.
        Nunito         → font tròn, dễ đọc, dùng cho nội dung thông thường.
@@ -30,23 +13,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
-  <!-- Nhúng file CSS riêng biệt. Trình duyệt tải style.css và áp dụng toàn bộ định dạng.
-       Đặt trong <head> để CSS sẵn sàng TRƯỚC khi nội dung HTML hiển thị,
-       tránh tình trạng trang hiện ra xấu xí rồi mới có màu sắc (gọi là FOUC). -->
   <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
-<!-- <body>: Phần "thân" — tất cả nội dung nhìn thấy được nằm trong đây. -->
-
-
-  <!-- ═══════════════════════════════════════════
-       THANH TIẾN TRÌNH ĐỌC BÀI (Scroll Progress Bar)
-       Dải mỏng 4px cố định ở đỉnh màn hình.
-       Ban đầu width=0%. JS tăng dần lên 100% theo mức cuộn.
-  ═══════════════════════════════════════════ -->
+  <!THANH TIẾN TRÌNH ĐỌC BÀI (Scroll Progress Bar)Dải mỏng 4px cố định ở đỉnh màn hình.Ban đầu width=0%. JS tăng dần lên 100% theo mức cuộn.>
   <div id="scroll-bar"></div>
 
 
