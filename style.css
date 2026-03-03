@@ -1,156 +1,105 @@
-/* =====================================================
-   STYLE.CSS — Ngày Quốc Tế Phụ Nữ 8/3
-   Chứa toàn bộ định dạng giao diện: màu sắc, bố cục,
-   animation CSS, và hiệu ứng hover thuần CSS.
-===================================================== */
 
 
-/* ─────────────────────────────────────────────────
-   BIẾN CSS TOÀN CỤC (:root)
-   Khai báo "biến" dùng chung cho cả file.
-   Ưu điểm: muốn đổi màu chỉ sửa 1 chỗ duy nhất.
-   Cú pháp dùng: var(--tên-biến)
-───────────────────────────────────────────────── */
+/* BIẾN CSS TOÀN CỤC (:root)Khai báo "biến" dùng chung cho cả file. */
 :root {
-  --pink:       #e91e8c;  /* Hồng chính — dùng cho viền, nút, highlight */
-  --light-pink: #f8a5c2;  /* Hồng sáng — dùng cho đường kẻ trang trí */
-  --pale-pink:  #fde8f0;  /* Hồng rất nhạt — nền hover nút */
-  --soft-pink:  #fce4ec;  /* Hồng cực nhạt — nền body và nền xen kẽ */
-  --dark-pink:  #c2185b;  /* Hồng đậm — tiêu đề, text quan trọng */
-  --white:      #fff;     /* Trắng thuần */
-  --text:       #5a3a4a;  /* Màu chữ chính: nâu tím nhạt, dễ đọc trên nền trắng */
+  --pink:       #e91e8c;  
+  --light-pink: #f8a5c2;  
+  --pale-pink:  #fde8f0;  
+  --soft-pink:  #fce4ec;  
+  --dark-pink:  #c2185b;  
+  --white:      #fff;     
+  --text:       #5a3a4a;  
 }
 
-
-/* ─────────────────────────────────────────────────
-   RESET CSS
-   Xóa margin/padding mặc định của trình duyệt.
-   Mỗi trình duyệt (Chrome, Firefox, Safari) có
-   giá trị mặc định khác nhau → reset để đồng nhất.
-───────────────────────────────────────────────── */
+/*Xóa margin/padding mặc định của trình duyệt. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* box-sizing: border-box → khi tính width/height,
-     bao gồm cả padding + border. Ví dụ: div width:100px + padding:10px
-     → tổng vẫn là 100px (không phải 120px như mặc định content-box). */
 }
 
-
-/* ─────────────────────────────────────────────────
-   BODY — Nền trang và font chữ mặc định
-───────────────────────────────────────────────── */
 body {
   font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
-  /* Font ưu tiên là Nunito (đã tải từ Google Fonts).
-     Fallback chain nếu Nunito không tải được (GitHub Pages, mạng chậm):
-     'Segoe UI' → Windows, Arial → mọi hệ thống, sans-serif → mặc định. */
-
+  /* Font ưu tiên là Nunito (đã tải từ Google Fonts). */
   background: #fce4ec;
-  /* Nền toàn trang màu hồng rất nhạt. Thấy ở các khoảng trống
-     giữa các section và khi cuộn quá cuối trang. */
-
   color: var(--text);
-  /* Màu chữ mặc định cho mọi nơi. Các phần tử con kế thừa màu này
-     trừ khi tự khai báo color riêng. */
-
   overflow-x: hidden;
-  /* Ẩn thanh cuộn ngang. Ngăn các animation (translateX) đẩy nội dung
-     ra ngoài làm xuất hiện scrollbar ngang gây xấu. */
 }
 
-
-/* ─────────────────────────────────────────────────
-   HEADER — Phần đầu trang nền gradient hồng
-───────────────────────────────────────────────── */
 .header {
   background: linear-gradient(135deg, #f48fb1 0%, #e91e8c 40%, #f06292 70%, #ff80ab 100%);
-  /* Nền gradient chéo 135° (từ góc trên trái xuống góc dưới phải).
-     4 điểm màu: hồng nhạt → hồng đậm → hồng trung → hồng sáng.
-     Tạo hiệu ứng ánh sáng chiếu từ góc trên phải. */
-
+  /* Nền gradient chéo 135° (từ góc trên trái xuống góc dưới phải) 4 điểm màu: hồng nhạt → hồng đậm → hồng trung → hồng sáng. */
   padding: 50px 20px 35px;
   /* Khoảng đệm bên trong: trên 50px, trái/phải 20px, dưới 35px. */
-
   text-align: center;
   /* Căn giữa tất cả nội dung con theo chiều ngang. */
-
   position: relative;
-  /* Cần thiết để các phần tử con dùng position:absolute
-     định vị tương đối so với header này (không phải toàn trang). */
-
+  /* Cần để các phần tử con dùng position:absolute
+     định vị tương đối so với header . */
   overflow: hidden;
   /* Cắt bỏ phần của các emoji trang trí thò ra ngoài viền header. */
 }
 
-/* Họa tiết chấm bi nền header dùng ::before (phần tử giả) */
+/* Họa tiết chấm bi nền header dùng ::before */
 .header::before {
   content: '';
-  /* Bắt buộc có content cho ::before/::after, dù là rỗng. */
-
   position: absolute;
   inset: 0;
-  /* inset:0 = top:0; right:0; bottom:0; left:0 → phủ kín header. */
+  /* inset:0 = top:0; right:0; bottom:0; left:0 = phủ kín header. */
 
   background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/svg%3E");
   /* SVG inline được encode thành URL. Vẽ hình tròn trắng nhỏ (r=4)
      trong suốt 8% trên nền trong suốt. Lặp lại tạo họa tiết chấm bi tinh tế. */
 }
 
-/* 4 trái tim trang trí ở 4 góc header */
+/* 4 trái tim trang trí 4 góc header */
 .hearts-deco {
   position: absolute;
   /* Thoát khỏi luồng bình thường, định vị tự do trong header (position:relative). */
-
   font-size: 24px;
   opacity: 0.5;
-  /* Trong suốt 50% để không che khuất nội dung chính. */
+  /* Trong suốt 50% */
 
   animation: floatHeart 3s ease-in-out infinite;
-  /* Chạy animation floatHeart, kéo 3s, nhịp ease-in-out (chậm-nhanh-chậm), lặp vô hạn. */
+  /* Chạy animation floatHeart, kéo 3s, nhịp chậm-nhanh-chậm, lặp vô hạn. */
 }
 
-/* Vị trí từng trái tim (dùng :nth-child để chọn theo thứ tự) */
+/* Vị trí từng trái tim */
 .hearts-deco:nth-child(1) { top: 10px;    left: 5%;   animation-delay: 0s;   }
 .hearts-deco:nth-child(2) { top: 20px;    right: 8%;  animation-delay: .5s;  }
 .hearts-deco:nth-child(3) { bottom: 20px; left: 12%;  animation-delay: 1s;   }
 .hearts-deco:nth-child(4) { bottom: 10px; right: 5%;  animation-delay: 1.5s; }
-/* animation-delay khác nhau → 4 trái tim lơ lửng lệch pha nhau, trông tự nhiên hơn. */
+/* animation-delay khác nhau = 4 trái tim lơ lửng lệch pha nhau */
 
-/* Định nghĩa animation floatHeart (dùng chung cho nhiều phần tử) */
+/* Định nghĩa animation floatHeart dùng chung cho nhiều phần tử */
 @keyframes floatHeart {
   0%, 100% { transform: translateY(0);    } /* vị trí gốc ở đầu và cuối */
   50%       { transform: translateY(-8px); } /* lên 8px ở giữa */
-  /* Tạo chuyển động lơ lửng nhẹ nhàng lên/xuống liên tục. */
 }
 
-/* Tiêu đề chính header */
 .header-title {
   font-family: 'Dancing Script', 'Brush Script MT', cursive;
   /* Font thư pháp ưu tiên Dancing Script.
-     'Brush Script MT' → fallback có sẵn trên Windows/macOS nếu Google Fonts lỗi.
-     cursive → fallback cuối cùng của hệ thống. */
+     'Brush Script MT' = fallback có sẵn trên hdh nếu gg fonts lỗi. cursive = fallback cuối cùng của hệ thống. */
 
   font-size: clamp(30px, 7vw, 56px);
   /* clamp(min, ideal, max):
-     - Tối thiểu 30px (điện thoại nhỏ không bị quá nhỏ)
-     - Lý tưởng 7vw = 7% chiều rộng viewport (tự co giãn theo màn hình)
-     - Tối đa 56px (màn hình lớn không bị quá to)
-     → Font tự thích nghi mọi kích thước màn hình. */
+     Tối thiểu 30px (điện thoại nhỏ không bị quá nhỏ)
+     Lý tưởng 7vw = 7% chiều rộng viewport (tự co giãn theo màn hình)
+     Tối đa 56px (màn hình lớn không bị quá to)
+     Font tự thích nghi mọi kích thước màn hình. */
 
   color: #fff;
   text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
-  /* Bóng chữ: 3px phải, 3px xuống, mờ 6px, màu đen trong suốt 20%. Tạo chiều sâu. */
-
-  letter-spacing: 2px;   /* Giãn cách chữ 2px → trông sang trọng hơn. */
+  /* Bóng chữ: 3px phải, 3px xuống, mờ 6px, màu đen trong suốt 20%. */
+  letter-spacing: 2px;   /* Giãn cách chữ 2px  */
   position: relative;    /* Đảm bảo tiêu đề hiển thị trên ::before (z-index). */
   z-index: 1;
   line-height: 1.15;     /* Khoảng cách dòng 1.15 lần font-size. */
 }
 
 .header-subtitle {
-  color: rgba(255,255,255,0.92); /* Trắng trong suốt 92% — nhạt hơn tiêu đề một chút. */
+  color: rgba(255,255,255,0.92); /* Trắng trong suốt 92%  */
   font-size: 15px;
   margin-top: 10px;
   font-style: italic;    /* Nghiêng. */
@@ -176,33 +125,19 @@ body {
   opacity: 0.6;
   z-index: 1;
   animation: floatHeart 2.5s ease-in-out infinite;
-  /* Dùng cùng animation nhưng 2.5s (khác với 3s của hearts-deco)
-     → không đồng bộ, tạo cảm giác sinh động đa dạng. */
+  /* Dùng cùng animation nhưng 2.5s khác với 3s của hearts-deco */
 }
 
-
-/* ─────────────────────────────────────────────────
-   NAV — Thanh điều hướng cố định
-───────────────────────────────────────────────── */
 nav {
   background: linear-gradient(90deg, #e91e8c, #d81b60);
-  /* Gradient ngang: hồng sáng → hồng đậm. */
 
   display: flex;
   justify-content: center; /* Căn giữa các nút nav. */
   gap: 6px;                /* Khoảng cách giữa các nút. */
   padding: 12px 10px;
-  flex-wrap: wrap;
-  /* flex-wrap: wrap → trên màn hình nhỏ, nút tự xuống dòng thay vì bị tràn. */
-
   position: sticky;
-  /* sticky: cuộn bình thường đến khi đụng top:0 thì "dính" lại không cuộn lên nữa. */
   top: 0;
-
   z-index: 100;
-  /* z-index:100 → nav hiển thị ĐÈ LÊN section bên dưới khi cuộn.
-     Cần position khác static mới dùng được z-index. */
-
   box-shadow: 0 2px 10px rgba(0,0,0,0.15);
   /* Bóng đổ xuống dưới nav tạo độ sâu, phân biệt nav với nội dung. */
 }
@@ -509,29 +444,24 @@ section.section-pink {
 /* DROPDOWN BOX — Hiện bên PHẢI chữ "Thành viên nhóm" */
 .member-dropdown {
   position: absolute;
-  top: 0;                         /* Ngang hàng với chữ trigger. */
+  top: 0;
   left: calc(100% + 12px);
-  /* 100% = chiều rộng của .member-trigger-wrap.
-     +12px = khoảng cách thở giữa chữ và dropdown.
-     Công thức này luôn đặt dropdown sát phải bất kể font to nhỏ. */
 
   background: white;
   border: 1.5px solid #f8bbd9;
   border-radius: 14px;
   box-shadow: 0 8px 30px rgba(233,30,140,0.22);
   padding: 8px 6px;
-  min-width: 240px;               /* Chiều rộng tối thiểu đủ hiển thị tên dài. */
-  z-index: 500;                   /* Hiện trên các phần tử khác. */
+  min-width: max-content;
+  /* max-content: dropdown tự rộng ra đủ để chứa tên dài nhất,
+     không bao giờ bị xuống dòng dù tên có dài bao nhiêu. */
+  z-index: 500;
 
-  /* TRẠNG THÁI ẨN mặc định */
-  pointer-events: none;           /* Không nhận click/hover khi đang ẩn. */
-  opacity: 0;                     /* Trong suốt hoàn toàn (ẩn). */
+  pointer-events: none;
+  opacity: 0;
   transform: translateX(-10px) scale(0.95);
-  /* Dịch trái 10px + thu nhỏ 95% → khi hiện ra sẽ có hiệu ứng "bay ra". */
-
-  transform-origin: top left;     /* Điểm neo để scale/translate. */
+  transform-origin: top left;
   transition: opacity 0.22s ease, transform 0.22s ease;
-  /* Chuyển mượt opacity và transform trong 0.22s khi hover. */
 }
 
 /* TRẠNG THÁI HIỆN khi hover vào wrap */
@@ -588,7 +518,8 @@ section.section-pink {
   font-size: 12.5px;
   font-weight: 700;
   color: var(--text);
-  flex: 1;               /* Chiếm hết khoảng trống còn lại → đẩy badge sang phải. */
+  flex: 1;
+  white-space: nowrap;   /* Tên không xuống dòng dù dài. */
 }
 
 .m-role {
@@ -674,11 +605,13 @@ footer strong { color: var(--dark-pink); }
   /* Hiện trên hầu hết mọi thứ (dưới scroll-bar là 10000). */
 }
 
+
 /* ─────────────────────────────────────────────────
    RESPONSIVE — Điều chỉnh cho màn hình nhỏ (≤600px)
 ───────────────────────────────────────────────── */
 @media (max-width: 600px) {
   /* @media: chỉ áp dụng CSS bên trong khi màn hình ≤ 600px (điện thoại). */
+
   section {
     margin: 15px 12px;    /* Margin nhỏ hơn để tận dụng không gian hẹp. */
     padding: 22px 18px;
@@ -693,6 +626,7 @@ footer strong { color: var(--dark-pink); }
     grid-template-columns: 1fr;
     /* 2 cột → 1 cột: tương tự. */
   }
+
   .header-title {
     font-size: 30px;
     /* Ghi đè clamp(), fix cứng 30px trên điện thoại nếu cần. */

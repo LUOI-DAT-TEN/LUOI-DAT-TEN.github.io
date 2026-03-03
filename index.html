@@ -4,17 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ngày Quốc Tế Phụ Nữ 8/3</title>
-  <!-- Google Fonts: Tải 2 font chữ từ Internet qua CDN của Google.
-       Dancing Script → font thư pháp / viết tay, dùng cho các tiêu đề lớn.
-       Nunito         → font tròn, dễ đọc, dùng cho nội dung thông thường.
-       display=swap   → trang hiển thị bằng font hệ thống TRƯỚC khi font tải xong,
-                        tránh trang trắng/đen khi mạng chậm (quan trọng trên GitHub Pages).
-       Nếu mất internet → trình duyệt tự dùng font mặc định hệ thống (sans-serif). -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -25,51 +18,24 @@
   <!-- CANVAS HOA RƠI
        Phủ toàn màn hình (position:fixed, width/height 100% trong CSS).
        pointer-events:none → không chặn click/hover vào nội dung bên dưới.
-       JS vẽ emoji hoa (🌸🌺🌷...) bay từ trên xuống liên tục qua Canvas 2D API. -->
+       JS vẽ emoji hoa (🌸🌺🌷) bay từ trên xuống liên tục qua Canvas 2D API. -->
   <canvas id="petal-canvas"></canvas>
-
-
-  <!-- ═══════════════════════════════════════════
-       HEADER — Phần đầu trang, nền gradient hồng
-  ═══════════════════════════════════════════ -->
   <div class="header">
-  <!-- Dùng <div> thay <header> vì CSS cần overflow:hidden để cắt các emoji
-       trang trí bị thò ra ngoài viền. -->
-
-    <!-- 4 trái tim trang trí đặt ở 4 góc header.
-         CSS dùng position:absolute + top/bottom/left/right để định vị chính xác.
-         animation floatHeart làm chúng lơ lửng lên xuống liên tục.
-         Mỗi cái có animation-delay khác nhau → không đồng bộ, trông tự nhiên hơn. -->
-    <span class="hearts-deco">💗</span>  <!-- góc trên trái   — delay: 0s   -->
-    <span class="hearts-deco">🌸</span>  <!-- góc trên phải  — delay: 0.5s -->
-    <span class="hearts-deco">💕</span>  <!-- góc dưới trái  — delay: 1s   -->
-    <span class="hearts-deco">🌷</span>  <!-- góc dưới phải  — delay: 1.5s -->
-
-    <!-- Phong bì góc trên phải. Tốc độ lơ lửng khác (2.5s) tạo sự đa dạng. -->
+    <span class="hearts-deco">💗</span>  
+    <span class="hearts-deco">🌸</span>  
+    <span class="hearts-deco">💕</span>  
+    <span class="hearts-deco">🌷</span>  
     <span class="envelope-deco">💌</span>
 
-    <!-- h1: Tiêu đề quan trọng nhất (cả trang chỉ có 1 h1, tốt cho SEO Google).
-         Font Dancing Script (thư pháp). anime.js animate nó rơi xuống + phóng to khi tải. -->
     <h1 class="header-title">Ngày Quốc Tế Phụ Nữ 8/3</h1>
-
-    <!-- Phụ đề nhỏ nghiêng bên dưới tiêu đề. Màu trắng trong suốt 92%. -->
-    <p class="header-subtitle">Chúc mừng ngày của những người phụ nữ tuyệt vời!</p>
-
-    <!-- Hàng 3 trái tim trắng. Flexbox căn giữa với gap tạo khoảng cách đều nhau. -->
+    <p class="header-subtitle">Chúc mừng ngày của những người phụ nữ tuyệt vời!</p>->
     <div class="heart-row">🤍 🤍 🤍</div>
+  </div>
 
-  </div><!-- /.header -->
 
-
-  <!-- ═══════════════════════════════════════════
-       THANH ĐIỀU HƯỚNG (Navigation)
-       position:sticky; top:0 → "dính" lên đỉnh màn hình khi cuộn xuống.
-       z-index:100 → hiển thị đè lên các section bên dưới.
-  ═══════════════════════════════════════════ -->
+  <!--THANH ĐIỀU HƯỚNG-->
   <nav>
-    <!-- href="#lichsu": dấu # là "neo" (anchor link).
-         Click → trình duyệt tự cuộn mượt đến phần tử có id="lichsu".
-         Không tải lại trang, chỉ di chuyển vị trí. -->
+    <!-- href="#lichsu": dấu # là "neo" (anchor link). Click=trình duyệt tự cuộn mượt đến phần tử có id="lichsu". Không tải lại trang, chỉ di chuyển vị trí. -->
     <a href="#lichsu">Lịch sử</a>
     <a href="#ynghia">Ý nghĩa</a>
     <a href="#loichuc">Lời chúc</a>
@@ -77,122 +43,65 @@
   </nav>
 
 
-  <!-- ═══════════════════════════════════════════
-       SECTION 1 — LỊCH SỬ
-       id="lichsu" phải khớp chính xác với href="#lichsu" trong nav
-       để tính năng cuộn-đến hoạt động đúng.
-  ═══════════════════════════════════════════ -->
+  <!--SECTION 1 — LỊCH SỬ id="lichsu" phải khớp chính xác với href="#lichsu" trong nav để tính năng cuộn-đến hoạt động đúng-->
   <section id="lichsu">
-
-    <!-- Tiêu đề section. CSS tạo đường kẻ ngang hai bên chữ bằng ::before và ::after. -->
     <h2 class="section-title"> Lịch sử </h2>
-
     <p>Ngày 8/3 bắt nguồn từ phong trào đấu tranh của nữ công nhân ở New York City (Mỹ) vào đầu thế kỷ 20, khi họ yêu cầu giảm giờ làm, tăng lương và có quyền bầu cử.</p>
-
     <p>Năm 1910, tại hội nghị ở Copenhagen, nhà hoạt động Clara Zetkin đề xuất chọn một ngày Quốc tế Phụ nữ. Đến năm 1917, phong trào phụ nữ ở Nga bùng nổ vào ngày 8/3, và từ đó ngày này được nhiều quốc gia công nhận là Ngày Quốc tế Phụ nữ – nhằm tôn vinh phụ nữ và thúc đẩy bình đẳng giới. 🌹</p>
-
   </section>
 
 
-  <!-- ═══════════════════════════════════════════
-       SECTION 2 — Ý NGHĨA
-       class="section-pink": thêm nền gradient hồng nhạt,
-       tạo sự xen kẽ màu trắng / hồng giữa các section.
-  ═══════════════════════════════════════════ -->
+  <!--SECTION 2 — Ý NGHĨA-->
   <section id="ynghia" class="section-pink">
-
     <h2 class="section-title">🌸 Ý nghĩa của ngày 8/3 🌸</h2>
-
-    <!-- Container grid 3 cột chứa 3 card bằng nhau.
-         Trên mobile ≤600px, CSS tự chuyển thành 1 cột (xem @media trong style.css). -->
+    <!-- Container grid 3 cột chứa 3 card bằng nhau. -->
     <div class="cards">
-
-      <!-- Mỗi .card: nền trắng, bo góc 14px, viền hồng nhạt.
-           JS thêm hiệu ứng: hover → nâng lên + icon nhảy to. -->
       <div class="card">
-        <span class="card-icon">🏠</span>       <!-- icon lớn 36px ở đầu card -->
-        <div class="card-title">Gia đình</div> <!-- tiêu đề in đậm màu hồng -->
+        <span class="card-icon">🏠</span>    
+        <div class="card-title">Gia đình</div> 
         <p>Là dịp để bày tỏ lòng biết ơn và yêu thương đối với mẹ, bà, chị em – những người phụ nữ luôn hy sinh và chăm sóc gia đình.</p>
       </div>
-
       <div class="card">
         <span class="card-icon">🤝</span>
         <div class="card-title">Xã hội &amp; công việc</div>
-        <!-- &amp; là HTML entity cho ký tự &.
-             Viết & trực tiếp trong HTML dễ bị trình duyệt hiểu nhầm là entity. -->
+        <!-- &amp; là HTML entity cho ký tự &.Viết & trực tiếp trong HTML dễ bị trình duyệt hiểu nhầm là entity. -->
         <p>Tôn vinh những đóng góp của phụ nữ trong mọi lĩnh vực và thúc đẩy bình đẳng giới trong học tập, lao động và lãnh đạo.</p>
       </div>
-
       <div class="card">
         <span class="card-icon">🧠</span>
         <div class="card-title">Giá trị tinh thần</div>
         <p>Nhắc nhở phụ nữ trân trọng bản thân, tự tin, mạnh mẽ và theo đuổi ước mơ của mình.</p>
       </div>
-
-    </div><!-- /.cards -->
-
-    <!-- Hộp tóm tắt: nền gradient, viền đậm hơn, chữ in đậm màu hồng.
-         JS animate nó phóng to từ 88% → 100% khi scroll đến. -->
+    </div>
     <div class="summary-box">
       Ngày 8/3 là dịp để tôn vinh, tri ân và khẳng định giá trị của phụ nữ, đồng thời nhắc nhở xã hội về bình đẳng, tôn trọng và trao cơ hội công bằng cho phụ nữ trong mọi lĩnh vực.
     </div>
-
   </section>
 
 
-  <!-- ═══════════════════════════════════════════
-       SECTION 3 — LỜI CHÚC
-  ═══════════════════════════════════════════ -->
+  <!--SECTION 3 — LỜI CHÚC-->
   <section id="loichuc">
-
     <h2 class="section-title"> Lời chúc ngày 8/3 ý nghĩa </h2>
-
-    <!-- Khung lời chúc. CSS có perspective:600px để bật không gian 3D,
-         giúp hiệu ứng rotateX (lật trang như sách) của anime.js trông thực tế. -->
     <div class="greeting-box">
-
-      <!-- id="greeting-text": JS dùng document.getElementById("greeting-text")
-           để tìm chính xác đoạn này và thay nội dung khi bấm nút.
-           Không có id → JS không biết phần tử nào cần đổi. -->
       <p id="greeting-text">" Kính chúc các Cô ngày 8/3 luôn mạnh khỏe, hạnh phúc và mãi là người truyền cảm hứng tận tâm cho các thế hệ học trò."</p>
-
-      <!-- Hoa tulip trang trí góc dưới phải.
-           JS tạo 2 hiệu ứng: (1) lắc lư vô hạn, (2) nhảy lên mỗi khi đổi lời chúc. -->
+      <!-- Hoa tulip trang trí góc dưới phải.JS tạo 2 hiệu ứng: (1) lắc lư vô hạn, (2) nhảy lên mỗi khi đổi lời chúc. -->
       <span class="tulip-deco">🌷</span>
-
-    </div><!-- /.greeting-box -->
-
+    </div>
     <!-- flex container để căn giữa nút theo chiều ngang. -->
     <div class="btn-wrap">
-
-      <!-- #btn-spinner: DIV WRAPPER bao ngoài button — ĐÂY là phần tử bị xoay 360°.
-           Tách wrapper riêng vì phần tử <button> gặp vấn đề với CSS transform
-           trên một số trình duyệt. Dùng <div> display:inline-block thì chắc chắn hơn.
-           Kỹ thuật "counter-rotation": wrapper xoay +360°, button con xoay -360°
-           → chữ bên trong đứng yên nhưng vẫn thấy hiệu ứng co/giãn đẹp. -->
       <div class="btn-spinner" id="btn-spinner">
 
         <!-- onclick="changeGreeting()": khi click, gọi hàm changeGreeting() trong script.js. -->
-        <button class="btn" onclick="changeGreeting()">🔄 Lời chúc mới</button>
-
-      </div><!-- /#btn-spinner -->
-
-    </div><!-- /.btn-wrap -->
-
+        <button class="btn" onclick="changeGreeting()"> Lời chúc mới</button>
+      </div>
+    </div>
   </section>
 
 
-  <!-- ═══════════════════════════════════════════
-       SECTION 4 — CÁCH KỶ NIỆM
-  ═══════════════════════════════════════════ -->
+  <!--SECTION 4 — CÁCH KỶ NIỆM-->
   <section id="cachkyniem" class="section-pink">
-
     <h2 class="section-title">🌿 Cách kỷ niệm ngày 8/3 🌿</h2>
-
-    <!-- Grid 2 cột, 4 ô. Trên mobile tự xuống 1 cột.
-         JS animate mỗi .way-item trượt từ trái sang phải khi scroll đến. -->
     <div class="ways-grid">
-
       <div class="way-item">
         <h4>🎁 Tặng quà</h4>
         <ul>
@@ -201,7 +110,6 @@
           <li>Tự tay làm quà handmade (thiệp, khung ảnh, album kỷ niệm) để tặng ý nghĩa tinh thần.</li>
         </ul>
       </div>
-
       <div class="way-item">
         <h4>🍽️ Bữa tiệc</h4>
         <ul>
@@ -210,7 +118,6 @@
           <li>Trang trí bàn ăn với nến, hoa và một tấm thiệp nhỏ để tạo sự bất ngờ.</li>
         </ul>
       </div>
-
       <div class="way-item">
         <h4>💌 Lời cảm ơn</h4>
         <ul>
@@ -219,7 +126,6 @@
           <li>Nói lời cảm ơn trực tiếp và dành thời gian lắng nghe họ.</li>
         </ul>
       </div>
-
       <div class="way-item">
         <h4>🎉 Sự kiện</h4>
         <ul>
@@ -228,39 +134,18 @@
           <li>Tổ chức hoạt động thiện nguyện dành cho phụ nữ có hoàn cảnh khó khăn.</li>
         </ul>
       </div>
-
-    </div><!-- /.ways-grid -->
-
+    </div>
   </section>
 
 
-  <!-- ═══════════════════════════════════════════
-       FOOTER — Chân trang
-  ═══════════════════════════════════════════ -->
+  <!--FOOTER — Chân trang-->
   <footer>
-
     <p>© 2026 — <strong>Nhóm ... Lớp 12D2 THPT Đoàn Kết</strong></p>
-    <p>✉️ Email đại diện: <a href="a@gmail.com" style="color:var(--dark-pink)">nhom@example.com</a></p>
-    <!-- var(--dark-pink): dùng biến CSS khai báo trong :root của style.css. -->
+    <p>✉️ Email đại diện: <a href="lephamtandat3@gmail.com" style="color:var(--dark-pink)">lephamtandat3@gmail.com</a></p>
     <p><em>Ngày cập nhật cuối: 08/03/2026</em></p>
-
-    <!-- DROPDOWN THÀNH VIÊN NHÓM
-         Hover vào dòng chữ → danh sách 8 người hiện ra bên phải.
-         Hoàn toàn bằng CSS :hover (không cần JS click).
-         position:relative ở đây để dropdown con dùng position:absolute định vị đúng. -->
     <div class="member-trigger-wrap">
-
-      <!-- Dòng chữ kích hoạt hover. ▾ xoay 90° thành ► khi hover (CSS transition). -->
       <p class="member-trigger">🔗 <strong>Thành viên nhóm</strong> <span class="trigger-hint">▾</span></p>
-
-      <!-- Dropdown: mặc định opacity:0 (ẩn) và dịch sang trái -10px.
-           Khi hover vào .member-trigger-wrap, CSS chuyển opacity:1 và dịch về 0px.
-           left:calc(100% + 12px) → luôn nằm cách 12px bên phải chữ dù font to nhỏ. -->
       <div class="member-dropdown" id="member-dropdown">
-
-        <!-- Mỗi hàng thành viên: 4 phần tử con dùng flexbox hàng ngang.
-             m-num  → số thứ tự        | m-emoji → icon đại diện
-             m-name → tên (flex:1)     | m-role  → badge vai trò nền gradient hồng -->
         <div class="member-item"><span class="m-num">01</span><span class="m-emoji">👑</span><span class="m-name">LÊ PHẠM TẤN ĐẠT    </span><span class="m-role">Nhóm trưởng,JS</span></div>
         <div class="member-item"><span class="m-num">02</span><span class="m-emoji">🎨</span><span class="m-name">ĐẶNG THỊ THÙY DUNG </span><span class="m-role">Thiết kế,CSS</span></div>
         <div class="member-item"><span class="m-num">03</span><span class="m-emoji">✍️</span><span class="m-name">LƯ HÒA MINH        </span><span class="m-role">Nội dung,HTML</span></div>
