@@ -1,6 +1,3 @@
-
-
-/* BIẾN CSS TOÀN CỤC (:root)Khai báo "biến" dùng chung cho cả file. */
 :root {
   --pink:       #e91e8c;  
   --light-pink: #f8a5c2;  
@@ -10,37 +7,24 @@
   --white:      #fff;     
   --text:       #5a3a4a;  
 }
-
-/*Xóa margin/padding mặc định của trình duyệt. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
-  /* Font ưu tiên là Nunito (đã tải từ Google Fonts). */
   background: #fce4ec;
   color: var(--text);
   overflow-x: hidden;
 }
-
 .header {
-  background: linear-gradient(135deg, #f48fb1 0%, #e91e8c 40%, #f06292 70%, #ff80ab 100%);
-  /* Nền gradient chéo 135° (từ góc trên trái xuống góc dưới phải) 4 điểm màu: hồng nhạt → hồng đậm → hồng trung → hồng sáng. */
-  padding: 50px 20px 35px;
-  /* Khoảng đệm bên trong: trên 50px, trái/phải 20px, dưới 35px. */
+  background: linear-gradient(135deg, #f48fb1 0%, #e91e8c 40%, #f06292 70%, #ff80ab 100%)
+  padding: 50px 20px 35px
   text-align: center;
-  /* Căn giữa tất cả nội dung con theo chiều ngang. */
   position: relative;
-  /* Cần để các phần tử con dùng position:absolute
-     định vị tương đối so với header . */
   overflow: hidden;
-  /* Cắt bỏ phần của các emoji trang trí thò ra ngoài viền header. */
 }
-
-/* Họa tiết chấm bi nền header dùng ::before */
 .header::before {
   content: '';
   position: absolute;
