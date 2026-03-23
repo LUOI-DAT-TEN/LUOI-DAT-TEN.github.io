@@ -13,12 +13,6 @@
 <body>
   <!THANH TIẾN TRÌNH ĐỌC BÀI (Scroll Progress Bar)Dải mỏng 4px cố định ở đỉnh màn hình.Ban đầu width=0%. JS tăng dần lên 100% theo mức cuộn.>
   <div id="scroll-bar"></div>
-
-
-  <!-- CANVAS HOA RƠI
-       Phủ toàn màn hình (position:fixed, width/height 100% trong CSS).
-       pointer-events:none → không chặn click/hover vào nội dung bên dưới.
-       JS vẽ emoji hoa (🌸🌺🌷) bay từ trên xuống liên tục qua Canvas 2D API. -->
   <canvas id="petal-canvas"></canvas>
   <div class="header">
     <span class="hearts-deco">💗</span>  
@@ -26,35 +20,25 @@
     <span class="hearts-deco">💕</span>  
     <span class="hearts-deco">🌷</span>  
     <span class="envelope-deco">💌</span>
-
     <h1 class="header-title">Ngày Quốc Tế Phụ Nữ 8/3</h1>
     <p class="header-subtitle">Chúc mừng ngày của những người phụ nữ tuyệt vời!</p>->
     <div class="heart-row">🤍 🤍 🤍</div>
   </div>
-
-
-  <!--THANH ĐIỀU HƯỚNG-->
   <nav>
-    <!-- href="#lichsu": dấu # là "neo" (anchor link). Click=trình duyệt tự cuộn mượt đến phần tử có id="lichsu". Không tải lại trang, chỉ di chuyển vị trí. -->
     <a href="#lichsu">Lịch sử</a>
     <a href="#ynghia">Ý nghĩa</a>
     <a href="#loichuc">Lời chúc</a>
     <a href="#cachkyniem">Cách kỷ niệm</a>
   </nav>
-
-
-  <!--SECTION 1 — LỊCH SỬ id="lichsu" phải khớp chính xác với href="#lichsu" trong nav để tính năng cuộn-đến hoạt động đúng-->
+  
   <section id="lichsu">
     <h2 class="section-title"> Lịch sử </h2>
     <p>Ngày 8/3 bắt nguồn từ phong trào đấu tranh của nữ công nhân ở New York City (Mỹ) vào đầu thế kỷ 20, khi họ yêu cầu giảm giờ làm, tăng lương và có quyền bầu cử.</p>
     <p>Năm 1910, tại hội nghị ở Copenhagen, nhà hoạt động Clara Zetkin đề xuất chọn một ngày Quốc tế Phụ nữ. Đến năm 1917, phong trào phụ nữ ở Nga bùng nổ vào ngày 8/3, và từ đó ngày này được nhiều quốc gia công nhận là Ngày Quốc tế Phụ nữ – nhằm tôn vinh phụ nữ và thúc đẩy bình đẳng giới. 🌹</p>
   </section>
 
-
-  <!--SECTION 2 — Ý NGHĨA-->
   <section id="ynghia" class="section-pink">
     <h2 class="section-title">🌸 Ý nghĩa của ngày 8/3 🌸</h2>
-    <!-- Container grid 3 cột chứa 3 card bằng nhau. -->
     <div class="cards">
       <div class="card">
         <span class="card-icon">🏠</span>    
@@ -64,7 +48,6 @@
       <div class="card">
         <span class="card-icon">🤝</span>
         <div class="card-title">Xã hội &amp; công việc</div>
-        <!-- &amp; là HTML entity cho ký tự &.Viết & trực tiếp trong HTML dễ bị trình duyệt hiểu nhầm là entity. -->
         <p>Tôn vinh những đóng góp của phụ nữ trong mọi lĩnh vực và thúc đẩy bình đẳng giới trong học tập, lao động và lãnh đạo.</p>
       </div>
       <div class="card">
@@ -78,27 +61,19 @@
     </div>
   </section>
 
-
-  <!--SECTION 3 — LỜI CHÚC-->
   <section id="loichuc">
     <h2 class="section-title"> Lời chúc ngày 8/3 ý nghĩa </h2>
     <div class="greeting-box">
       <p id="greeting-text">" Kính chúc các Cô ngày 8/3 luôn mạnh khỏe, hạnh phúc và mãi là người truyền cảm hứng tận tâm cho các thế hệ học trò."</p>
-      <!-- Hoa tulip trang trí góc dưới phải.JS tạo 2 hiệu ứng: (1) lắc lư vô hạn, (2) nhảy lên mỗi khi đổi lời chúc. -->
       <span class="tulip-deco">🌷</span>
     </div>
-    <!-- flex container để căn giữa nút theo chiều ngang. -->
     <div class="btn-wrap">
       <div class="btn-spinner" id="btn-spinner">
-
-        <!-- onclick="changeGreeting()": khi click, gọi hàm changeGreeting() trong script.js. -->
         <button class="btn" onclick="changeGreeting()"> Lời chúc mới</button>
       </div>
     </div>
   </section>
 
-
-  <!--SECTION 4 — CÁCH KỶ NIỆM-->
   <section id="cachkyniem" class="section-pink">
     <h2 class="section-title">🌿 Cách kỷ niệm ngày 8/3 🌿</h2>
     <div class="ways-grid">
@@ -137,8 +112,6 @@
     </div>
   </section>
 
-
-  <!--FOOTER — Chân trang-->
   <footer>
     <p>© 2026 — <strong>Nhóm ... Lớp 12D2 THPT Đoàn Kết</strong></p>
     <p>✉️ Email đại diện: <a href="lephamtandat3@gmail.com" style="color:var(--dark-pink)">lephamtandat3@gmail.com</a></p>
