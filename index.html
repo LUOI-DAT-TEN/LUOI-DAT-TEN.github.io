@@ -1,1 +1,503 @@
 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giấy thông hành thiết bị</title>
+<meta name="description" content="Đọc và hiển thị thông tin thiết bị, hệ điều hành, trình duyệt, phần cứng, IP và vị trí tương đối — toàn bộ xử lý ngay trên trình duyệt của bạn.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2EDE3;
+    --paper-deep:#EAE2CC;
+    --ink:#201C15;
+    --ink-soft:#6E6552;
+    --rule:#C7BB98;
+    --stamp:#A4382B;
+    --ok:#3F6B4F;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image: radial-gradient(circle, var(--rule) 1px, transparent 1.4px);
+    background-size: 20px 20px;
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.45;
+  }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 16px 64px;
+  }
+
+  .ticket{
+    position:relative;
+    background:var(--paper-deep);
+    border:1.5px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+
+  /* ---------- Header stub ---------- */
+  .head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+    padding:30px 32px 24px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(1.5rem, 4vw, 2.05rem);
+    margin:0;
+    letter-spacing:-.01em;
+  }
+  .subtitle{
+    margin:8px 0 0;
+    font-size:.9rem;
+    color:var(--ink-soft);
+    max-width:38ch;
+  }
+  .head-right{
+    text-align:right;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.78rem;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .head-right strong{
+    display:block;
+    color:var(--ink);
+    font-size:.85rem;
+    margin-bottom:4px;
+  }
+
+  /* ---------- Perforation ---------- */
+  .perf{
+    position:relative;
+    height:0;
+    border-top:2px dashed var(--ink-soft);
+    margin:0 0 0 0;
+  }
+  .perf::before, .perf::after{
+    content:"";
+    position:absolute;
+    top:-13px;
+    width:26px; height:26px;
+    background:var(--paper);
+    border-radius:50%;
+    border:1.5px solid var(--ink);
+  }
+  .perf::before{ left:-14px; }
+  .perf::after{ right:-14px; }
+
+  /* ---------- Sections ---------- */
+  .block{
+    padding:24px 32px;
+    border-bottom:1px dotted var(--rule);
+  }
+  .block:last-of-type{ border-bottom:none; }
+
+  .block h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:.92rem;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .live{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    text-transform:none;
+    letter-spacing:0;
+    color:var(--ink-soft);
+  }
+  .live-dot{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--ink-soft);
+    animation:pulse 1.3s infinite;
+  }
+  .live-dot.busy{ background:var(--stamp); }
+  .live-dot.ok{ background:var(--ok); animation:none; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
+
+  .row{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    padding:5px 0;
+    font-size:.92rem;
+  }
+  .row .label{ color:var(--ink-soft); flex-shrink:0; }
+  .row .leader{ flex:1; border-bottom:1px dotted var(--rule); margin-bottom:4px; min-width:12px; }
+  .row .value{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    text-align:right;
+    max-width:58%;
+    overflow-wrap:anywhere;
+  }
+
+  .ua-row{ display:block; padding:10px 0 4px; }
+  .ua-row .label{ display:block; margin-bottom:6px; }
+  .ua-value{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.78rem;
+    background:var(--paper);
+    border:1px solid var(--rule);
+    padding:10px 12px;
+    overflow-wrap:anywhere;
+  }
+
+  .gps-area{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dotted var(--rule);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:14px;
+  }
+  .btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:.85rem;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:10px 18px;
+    cursor:pointer;
+    letter-spacing:.02em;
+  }
+  .btn:hover{ background:var(--stamp); }
+  .btn:focus-visible{ outline:3px solid var(--stamp); outline-offset:2px; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .status-msg{ font-size:.82rem; color:var(--ink-soft); font-style:italic; }
+
+  .retry{
+    background:none; border:none; text-decoration:underline;
+    color:var(--stamp); cursor:pointer; font-family:'IBM Plex Sans',sans-serif;
+    font-size:.82rem; padding:0;
+  }
+
+  /* ---------- Footer ---------- */
+  .foot{
+    padding:28px 32px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .foot-left{ max-width:46ch; }
+  .foot-note{ font-size:.78rem; color:var(--ink-soft); margin:0 0 14px; }
+  .barcode{ display:flex; align-items:flex-end; gap:2px; height:34px; margin-bottom:8px; }
+  .bar{ background:var(--ink); height:100%; }
+  .ticket-no{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+
+  .stamp{
+    flex-shrink:0;
+    width:118px; height:118px;
+    border:3px double var(--stamp);
+    border-radius:50%;
+    color:var(--stamp);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:.74rem;
+    line-height:1.3;
+    padding:8px;
+    transform:rotate(-10deg) scale(1.4);
+    opacity:0;
+    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .45s ease;
+  }
+  .stamp.show{ transform:rotate(-10deg) scale(1); opacity:.88; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+
+  @media (max-width:600px){
+    .head{ flex-direction:column; }
+    .head-right{ text-align:left; }
+    .row{ flex-wrap:wrap; }
+    .row .value{ max-width:100%; text-align:left; }
+    .row .leader{ display:none; }
+    .foot{ flex-direction:column; align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <main class="ticket">
+
+    <div class="head">
+      <div>
+        <p class="eyebrow">Phiên truy cập trực tiếp</p>
+        <h1 class="title">Giấy thông hành thiết bị</h1>
+        <p class="subtitle">Đọc trực tiếp những gì trình duyệt của bạn đang cung cấp, ngay tại đây — không gửi đi đâu khác ngoài việc tra cứu IP/vị trí ở cuối trang.</p>
+      </div>
+      <div class="head-right">
+        <strong id="ticketNo">DEV-0000000</strong>
+        Cấp lúc: <span id="issuedAt">—</span>
+      </div>
+    </div>
+
+    <div class="perf"></div>
+
+    <!-- SECTION 1 -->
+    <section class="block">
+      <h2>Thiết bị &amp; hệ điều hành</h2>
+      <div class="row"><span class="label">Loại thiết bị</span><span class="leader"></span><span class="value" id="deviceType">—</span></div>
+      <div class="row"><span class="label">Hệ điều hành</span><span class="leader"></span><span class="value" id="osName">—</span></div>
+      <div class="row"><span class="label">Nền tảng hệ thống</span><span class="leader"></span><span class="value" id="platform">—</span></div>
+      <div class="row"><span class="label">Ngôn ngữ hệ thống</span><span class="leader"></span><span class="value" id="sysLang">—</span></div>
+      <div class="row"><span class="label">Ngôn ngữ ưu tiên</span><span class="leader"></span><span class="value" id="prefLangs">—</span></div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="block">
+      <h2>Trình duyệt</h2>
+      <div class="row"><span class="label">Trình duyệt</span><span class="leader"></span><span class="value" id="browserName">—</span></div>
+      <div class="row"><span class="label">Phiên bản</span><span class="leader"></span><span class="value" id="browserVersion">—</span></div>
+      <div class="row"><span class="label">Cookie</span><span class="leader"></span><span class="value" id="cookieStatus">—</span></div>
+      <div class="row"><span class="label">Yêu cầu không theo dõi</span><span class="leader"></span><span class="value" id="dntStatus">—</span></div>
+      <div class="row"><span class="label">Đang trực tuyến</span><span class="leader"></span><span class="value" id="onlineStatus">—</span></div>
+      <div class="row ua-row">
+        <span class="label">Chuỗi User-Agent đầy đủ</span>
+        <div class="ua-value" id="uaFull">—</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="block">
+      <h2>Phần cứng &amp; màn hình</h2>
+      <div class="row"><span class="label">Số nhân CPU (logic)</span><span class="leader"></span><span class="value" id="cpuCores">—</span></div>
+      <div class="row"><span class="label">RAM ước tính</span><span class="leader"></span><span class="value" id="ramApprox">—</span></div>
+      <div class="row"><span class="label">Card đồ hoạ (GPU)</span><span class="leader"></span><span class="value" id="gpuInfo">—</span></div>
+      <div class="row"><span class="label">Độ phân giải màn hình</span><span class="leader"></span><span class="value" id="screenRes">—</span></div>
+      <div class="row"><span class="label">Khung nhìn trình duyệt</span><span class="leader"></span><span class="value" id="viewportRes">—</span></div>
+      <div class="row"><span class="label">Tỷ lệ pixel</span><span class="leader"></span><span class="value" id="pixelRatio">—</span></div>
+      <div class="row"><span class="label">Độ sâu màu</span><span class="leader"></span><span class="value" id="colorDepth">—</span></div>
+      <div class="row"><span class="label">Số điểm chạm tối đa</span><span class="leader"></span><span class="value" id="touchPoints">—</span></div>
+      <div class="row"><span class="label">Hướng màn hình</span><span class="leader"></span><span class="value" id="orientation">—</span></div>
+      <div class="row"><span class="label">Loại kết nối mạng</span><span class="leader"></span><span class="value" id="connType">—</span></div>
+      <div class="row"><span class="label">Pin</span><span class="leader"></span><span class="value" id="batteryInfo">—</span></div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="block">
+      <h2>
+        Mạng &amp; vị trí (tương đối)
+        <span class="live"><span class="live-dot busy" id="netDot"></span><span id="netStatusLabel">Đang truy xuất…</span></span>
+      </h2>
+      <div class="row"><span class="label">Địa chỉ IP</span><span class="leader"></span><span class="value" id="ipAddr">—</span></div>
+      <div class="row"><span class="label">Nhà cung cấp dịch vụ</span><span class="leader"></span><span class="value" id="ispOrg">—</span></div>
+      <div class="row"><span class="label">Thành phố</span><span class="leader"></span><span class="value" id="city">—</span></div>
+      <div class="row"><span class="label">Tỉnh / khu vực</span><span class="leader"></span><span class="value" id="region">—</span></div>
+      <div class="row"><span class="label">Quốc gia</span><span class="leader"></span><span class="value" id="country">—</span></div>
+      <div class="row"><span class="label">Mã vùng</span><span class="leader"></span><span class="value" id="postal">—</span></div>
+      <div class="row"><span class="label">Múi giờ</span><span class="leader"></span><span class="value" id="timezone">—</span></div>
+      <div class="row"><span class="label">Toạ độ ước tính (theo IP)</span><span class="leader"></span><span class="value" id="ipCoords">—</span></div>
+      <p class="status-msg" id="netError" style="display:none;"></p>
+
+      <div class="gps-area">
+        <button class="btn" id="gpsBtn" type="button">Lấy vị trí chính xác hơn (GPS)</button>
+        <span class="status-msg" id="gpsStatus">Toạ độ theo IP chỉ chính xác ở cấp thành phố. Nhấn để dùng GPS của thiết bị (cần bạn cho phép).</span>
+      </div>
+      <div class="row" style="margin-top:10px;"><span class="label">Toạ độ GPS chính xác</span><span class="leader"></span><span class="value" id="gpsCoords">—</span></div>
+    </section>
+
+    <div class="foot">
+      <div class="foot-left">
+        <p class="foot-note">Mọi thông tin ở trên được đọc trực tiếp bằng JavaScript trên trình duyệt của chính bạn. Riêng IP và vị trí tương đối được tra cứu qua dịch vụ công khai <strong>ipapi.co</strong>. Trang này không lưu trữ hay gửi dữ liệu này đi bất kỳ nơi nào khác.</p>
+        <div class="barcode" id="barcode"></div>
+        <div class="ticket-no" id="ticketNo2">DEV-0000000 · CHỈ DÙNG CHO PHIÊN NÀY</div>
+      </div>
+      <div class="stamp" id="stamp">Đã xác minh<br><span id="stampTime"></span></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  const ua = navigator.userAgent || "";
+  const $ = id => document.getElementById(id);
+
+  /* ---------- Vé số & thời gian cấp ---------- */
+  const ticketNo = "DEV-" + Date.now().toString(36).toUpperCase();
+  $("ticketNo").textContent = ticketNo;
+  $("ticketNo2").textContent = ticketNo + " · CHỈ DÙNG CHO PHIÊN NÀY";
+  const issued = new Date();
+  $("issuedAt").textContent = issued.toLocaleString('vi-VN');
+
+  /* ---------- Mã vạch trang trí ---------- */
+  (function drawBarcode(){
+    const el = $("barcode");
+    let seed = 0;
+    for (let i = 0; i < ticketNo.length; i++) seed += ticketNo.charCodeAt(i);
+    for (let i = 0; i < 40; i++){
+      seed = (seed * 9301 + 49297) % 233280;
+      const w = 2 + (seed % 5);
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.width = w + 'px';
+      el.appendChild(bar);
+    }
+  })();
+
+  /* ---------- Thiết bị & Hệ điều hành ---------- */
+  function detectDeviceType(){
+    if (/iPad/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) return "Máy tính bảng";
+    if (/Mobi|iPhone|Android/i.test(ua)) return "Điện thoại di động";
+    return "Máy tính (desktop / laptop)";
+  }
+
+  function detectOS(){
+    if (/Windows NT 10/.test(ua)) return "Windows 10 / 11";
+    if (/Windows NT 6\.3/.test(ua)) return "Windows 8.1";
+    if (/Windows NT 6\.2/.test(ua)) return "Windows 8";
+    if (/Windows NT 6\.1/.test(ua)) return "Windows 7";
+    if (/Windows/.test(ua)) return "Windows (phiên bản cũ)";
+    const mac = ua.match(/Mac OS X (\d+[_.]\d+(?:[_.]\d+)?)/);
+    if (mac) return "macOS " + mac[1].replace(/_/g, '.');
+    const ios = ua.match(/OS (\d+[_.]\d+(?:[_.]\d+)?) like Mac OS X/);
+    if (ios) return "iOS " + ios[1].replace(/_/g, '.');
+    if (/iPhone|iPad|iPod/.test(ua)) return "iOS";
+    const android = ua.match(/Android (\d+(\.\d+)?)/);
+    if (android) return "Android " + android[1];
+    if (/Linux/.test(ua)) return "Linux";
+    return "Không xác định";
+  }
+
+  $("deviceType").textContent = detectDeviceType();
+  $("osName").textContent = detectOS();
+  $("platform").textContent = navigator.platform || "Không hỗ trợ";
+  $("sysLang").textContent = navigator.language || "Không xác định";
+  $("prefLangs").textContent = (navigator.languages && navigator.languages.join(", ")) || navigator.language || "Không xác định";
+
+  /* ---------- Trình duyệt ---------- */
+  function detectBrowser(){
+    let name = "Không xác định", version = "";
+    let m;
+    if (/Edg\//.test(ua)) { name = "Microsoft Edge"; m = ua.match(/Edg\/([\d.]+)/); }
+    else if (/OPR\//.test(ua)) { name = "Opera"; m = ua.match(/OPR\/([\d.]+)/); }
+    else if (/Firefox\//.test(ua)) { name = "Mozilla Firefox"; m = ua.match(/Firefox\/([\d.]+)/); }
+    else if (/Chrome\//.test(ua)) { name = "Google Chrome"; m = ua.match(/Chrome\/([\d.]+)/); }
+    else if (/Safari\//.test(ua) && /Version\//.test(ua)) { name = "Safari"; m = ua.match(/Version\/([\d.]+)/); }
+    if (m) version = m[1];
+    return { name, version };
+  }
+  const browser = detectBrowser();
+  $("browserName").textContent = browser.name;
+  $("browserVersion").textContent = browser.version || "Không xác định";
+  $("cookieStatus").textContent = navigator.cookieEnabled ? "Đang bật" : "Đang tắt";
+  $("dntStatus").textContent = (navigator.doNotTrack === "1") ? "Có yêu cầu" : "Không yêu cầu / không xác định";
+  $("onlineStatus").textContent = navigator.onLine ? "Có" : "Không";
+  $("uaFull").textContent = ua || "Không có";
+
+  /* ---------- Phần cứng & màn hình ---------- */
+  $("cpuCores").textContent = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " luồng" : "Không hỗ trợ";
+  $("ramApprox").textContent = navigator.deviceMemory ? "~" + navigator.deviceMemory + " GB (xấp xỉ)" : "Không hỗ trợ (chỉ Chrome/Edge)";
+
+  (function gpu(){
+    try{
+      const c = document.createElement('canvas');
+      const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+      if (!gl) { $("gpuInfo").textContent = "Không hỗ trợ WebGL"; return; }
+      const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      $("gpuInfo").textContent = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    }catch(e){ $("gpuInfo").textContent = "Không xác định"; }
+  })();
+
+  $("screenRes").textContent = screen.width + " × " + screen.height + " px";
+  $("viewportRes").textContent = window.innerWidth + " × " + window.innerHeight + " px";
+  $("pixelRatio").textContent = (window.devicePixelRatio || 1) + "x";
+  $("colorDepth").textContent = screen.colorDepth + " bit";
+  $("touchPoints").textContent = navigator.maxTouchPoints != null ? navigator.maxTouchPoints : "0";
+  $("orientation").textContent = (screen.orientation && screen.orientation.type) ||
+    (window.matchMedia("(orientation: portrait)").matches ? "portrait" : "landscape");
+
+  if (navigator.connection){
+    const c = navigator.connection;
+    $("connType").textContent = (c.effectiveType || "?") + (c.downlink ? " · " + c.downlink + " Mbps" : "");
+  } else {
+    $("connType").textContent = "Không hỗ trợ (chỉ Chrome/Edge/Android)";
+  }
+
+  if (navigator.getBattery){
+    navigator.getBattery().then(function(b){
+      $("batteryInfo").textContent = Math.round(b.level * 100) + "% · " + (b.charging ? "đang sạc" : "không sạc");
+    }).catch(function(){ $("batteryInfo").textContent = "Không xác định"; });
+  } else {
+    $("batteryInfo").textContent = "Không hỗ trợ trên trình duyệt này";
+  }
+
+  /* ---------- Mạng & vị trí (IP) ---------- */
+  const netDot = $("netDot");
+  const netLabel = $("netStatusLabel");
+  const stamp = $("stamp");
+  const netError = $("netError");
+
+  function showError(msg){
+    netDot.className = "live-dot";
+    netDot.style.background = "var(--stamp)";
+    netLabel.textContent = "Không thể truy xuất";
+    netError.style.display = "block";
+    netError.innerHTML = msg + ' — <button class="retry" id="retryBtn" type="button">thử lại</button>';
+    $("retryBtn").addEventListener("click", loadNetworkInfo);
+  }
+
+  function loadNetworkInfo(){
+    netDot.className = "live-dot busy";
+    netLabel.textContent = "Đang truy xuất…";
+    netError.style.display = "none";
+
+    fetch("https://ipapi.co/json/")
+      .then(function(res){
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function(d){
+        if (d.error) throw new Error(d.reason || "Lỗi từ dịch vụ tra cứu");
+        $("ipAddr").textContent = d.ip || "Không xác định";
+        $("ispOrg").textContent = d.org || "Không xác định";
+        $("city").textContent = d.city || "Không xác định";
+        $("region").textCont
