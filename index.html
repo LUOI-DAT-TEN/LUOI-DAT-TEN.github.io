@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -267,6 +266,8 @@
 <div class="wrap">
   <main class="ticket">
 
+    <div id="debugBanner" style="display:none; background:var(--stamp); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.72rem; padding:8px 16px;"></div>
+
     <div class="head">
       <div>
         <p class="eyebrow">Phiên truy cập trực tiếp</p>
@@ -358,19 +359,38 @@
 
 <script>
 (function(){
+  function $(id){ return document.getElementById(id); }
+  function setText(id, value){
+    const el = $(id);
+    if (el) el.textContent = value;
+  }
+  function safe(fn, fallback){
+    try { return fn(); } catch(e){ console.error(e); return fallback; }
+  }
+  function safeText(id, fn, fallback){
+    setText(id, safe(fn, fallback != null ? fallback : "Không xác định"));
+  }
+
+  window.addEventListener('error', function(e){
+    const banner = $("debugBanner");
+    if (banner) {
+      banner.style.display = "block";
+      banner.textContent = "⚠ Có lỗi JavaScript: " + (e.message || "không rõ") + ". Một vài ô có thể không hiển thị — thử mở lại bằng Chrome đầy đủ (không phải trình xem trước).";
+    }
+  });
+
   const ua = navigator.userAgent || "";
-  const $ = id => document.getElementById(id);
 
   /* ---------- Vé số & thời gian cấp ---------- */
-  const ticketNo = "DEV-" + Date.now().toString(36).toUpperCase();
-  $("ticketNo").textContent = ticketNo;
-  $("ticketNo2").textContent = ticketNo + " · CHỈ DÙNG CHO PHIÊN NÀY";
-  const issued = new Date();
-  $("issuedAt").textContent = issued.toLocaleString('vi-VN');
+  const ticketNo = safe(function(){ return "DEV-" + Date.now().toString(36).toUpperCase(); }, "DEV-000000");
+  setText("ticketNo", ticketNo);
+  setText("ticketNo2", ticketNo + " · CHỈ DÙNG CHO PHIÊN NÀY");
+  safe(function(){ setText("issuedAt", new Date().toLocaleString('vi-VN')); }, null);
 
   /* ---------- Mã vạch trang trí ---------- */
-  (function drawBarcode(){
+  safe(function(){
     const el = $("barcode");
+    if (!el) return;
     let seed = 0;
     for (let i = 0; i < ticketNo.length; i++) seed += ticketNo.charCodeAt(i);
     for (let i = 0; i < 40; i++){
@@ -381,7 +401,7 @@
       bar.style.width = w + 'px';
       el.appendChild(bar);
     }
-  })();
+  }, null);
 
   /* ---------- Thiết bị & Hệ điều hành ---------- */
   function detectDeviceType(){
@@ -389,7 +409,6 @@
     if (/Mobi|iPhone|Android/i.test(ua)) return "Điện thoại di động";
     return "Máy tính (desktop / laptop)";
   }
-
   function detectOS(){
     if (/Windows NT 10/.test(ua)) return "Windows 10 / 11";
     if (/Windows NT 6\.3/.test(ua)) return "Windows 8.1";
@@ -407,11 +426,13 @@
     return "Không xác định";
   }
 
-  $("deviceType").textContent = detectDeviceType();
-  $("osName").textContent = detectOS();
-  $("platform").textContent = navigator.platform || "Không hỗ trợ";
-  $("sysLang").textContent = navigator.language || "Không xác định";
-  $("prefLangs").textContent = (navigator.languages && navigator.languages.join(", ")) || navigator.language || "Không xác định";
+  safeText("deviceType", detectDeviceType);
+  safeText("osName", detectOS);
+  safeText("platform", function(){ return navigator.platform || "Không hỗ trợ"; });
+  safeText("sysLang", function(){ return navigator.language || "Không xác định"; });
+  safeText("prefLangs", function(){
+    return (navigator.languages && navigator.languages.join(", ")) || navigator.language || "Không xác định";
+  });
 
   /* ---------- Trình duyệt ---------- */
   function detectBrowser(){
@@ -423,81 +444,52 @@
     else if (/Chrome\//.test(ua)) { name = "Google Chrome"; m = ua.match(/Chrome\/([\d.]+)/); }
     else if (/Safari\//.test(ua) && /Version\//.test(ua)) { name = "Safari"; m = ua.match(/Version\/([\d.]+)/); }
     if (m) version = m[1];
-    return { name, version };
+    return { name: name, version: version };
   }
-  const browser = detectBrowser();
-  $("browserName").textContent = browser.name;
-  $("browserVersion").textContent = browser.version || "Không xác định";
-  $("cookieStatus").textContent = navigator.cookieEnabled ? "Đang bật" : "Đang tắt";
-  $("dntStatus").textContent = (navigator.doNotTrack === "1") ? "Có yêu cầu" : "Không yêu cầu / không xác định";
-  $("onlineStatus").textContent = navigator.onLine ? "Có" : "Không";
-  $("uaFull").textContent = ua || "Không có";
+  const browser = safe(detectBrowser, { name: "Không xác định", version: "" });
+  setText("browserName", browser.name);
+  setText("browserVersion", browser.version || "Không xác định");
+  safeText("cookieStatus", function(){ return navigator.cookieEnabled ? "Đang bật" : "Đang tắt"; });
+  safeText("dntStatus", function(){ return (navigator.doNotTrack === "1") ? "Có yêu cầu" : "Không yêu cầu / không xác định"; });
+  safeText("onlineStatus", function(){ return navigator.onLine ? "Có" : "Không"; });
+  setText("uaFull", ua || "Không có");
 
   /* ---------- Phần cứng & màn hình ---------- */
-  $("cpuCores").textContent = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " luồng" : "Không hỗ trợ";
-  $("ramApprox").textContent = navigator.deviceMemory ? "~" + navigator.deviceMemory + " GB (xấp xỉ)" : "Không hỗ trợ (chỉ Chrome/Edge)";
+  safeText("cpuCores", function(){
+    return navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " luồng" : "Không hỗ trợ";
+  });
+  safeText("ramApprox", function(){
+    return navigator.deviceMemory ? "~" + navigator.deviceMemory + " GB (xấp xỉ)" : "Không hỗ trợ (chỉ Chrome/Edge)";
+  });
+  safeText("gpuInfo", function(){
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+    if (!gl) return "Không hỗ trợ WebGL";
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    return dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+  }, "Không xác định");
+  safeText("screenRes", function(){ return screen.width + " × " + screen.height + " px"; });
+  safeText("viewportRes", function(){ return window.innerWidth + " × " + window.innerHeight + " px"; });
+  safeText("pixelRatio", function(){ return (window.devicePixelRatio || 1) + "x"; });
+  safeText("colorDepth", function(){ return screen.colorDepth + " bit"; });
+  safeText("touchPoints", function(){ return navigator.maxTouchPoints != null ? String(navigator.maxTouchPoints) : "0"; });
+  safeText("orientation", function(){
+    if (screen.orientation && screen.orientation.type) return screen.orientation.type;
+    if (window.matchMedia) {
+      return window.matchMedia("(orientation: portrait)").matches ? "Dọc (portrait)" : "Ngang (landscape)";
+    }
+    return "Không xác định";
+  });
+  safeText("connType", function(){
+    const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!c) return "Không hỗ trợ (chỉ Chrome/Edge/Android)";
+    return (c.effectiveType || "?") + (c.downlink ? " · " + c.downlink + " Mbps" : "");
+  });
 
-  (function gpu(){
-    try{
-      const c = document.createElement('canvas');
-      const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
-      if (!gl) { $("gpuInfo").textContent = "Không hỗ trợ WebGL"; return; }
-      const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-      $("gpuInfo").textContent = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-    }catch(e){ $("gpuInfo").textContent = "Không xác định"; }
-  })();
-
-  $("screenRes").textContent = screen.width + " × " + screen.height + " px";
-  $("viewportRes").textContent = window.innerWidth + " × " + window.innerHeight + " px";
-  $("pixelRatio").textContent = (window.devicePixelRatio || 1) + "x";
-  $("colorDepth").textContent = screen.colorDepth + " bit";
-  $("touchPoints").textContent = navigator.maxTouchPoints != null ? navigator.maxTouchPoints : "0";
-  $("orientation").textContent = (screen.orientation && screen.orientation.type) ||
-    (window.matchMedia("(orientation: portrait)").matches ? "portrait" : "landscape");
-
-  if (navigator.connection){
-    const c = navigator.connection;
-    $("connType").textContent = (c.effectiveType || "?") + (c.downlink ? " · " + c.downlink + " Mbps" : "");
-  } else {
-    $("connType").textContent = "Không hỗ trợ (chỉ Chrome/Edge/Android)";
-  }
-
-  if (navigator.getBattery){
-    navigator.getBattery().then(function(b){
-      $("batteryInfo").textContent = Math.round(b.level * 100) + "% · " + (b.charging ? "đang sạc" : "không sạc");
-    }).catch(function(){ $("batteryInfo").textContent = "Không xác định"; });
-  } else {
-    $("batteryInfo").textContent = "Không hỗ trợ trên trình duyệt này";
-  }
-
-  /* ---------- Mạng & vị trí (IP) ---------- */
-  const netDot = $("netDot");
-  const netLabel = $("netStatusLabel");
-  const stamp = $("stamp");
-  const netError = $("netError");
-
-  function showError(msg){
-    netDot.className = "live-dot";
-    netDot.style.background = "var(--stamp)";
-    netLabel.textContent = "Không thể truy xuất";
-    netError.style.display = "block";
-    netError.innerHTML = msg + ' — <button class="retry" id="retryBtn" type="button">thử lại</button>';
-    $("retryBtn").addEventListener("click", loadNetworkInfo);
-  }
-
-  function loadNetworkInfo(){
-    netDot.className = "live-dot busy";
-    netLabel.textContent = "Đang truy xuất…";
-    netError.style.display = "none";
-
-    fetch("https://ipapi.co/json/")
-      .then(function(res){
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
-      })
-      .then(function(d){
-        if (d.error) throw new Error(d.reason || "Lỗi từ dịch vụ tra cứu");
-        $("ipAddr").textContent = d.ip || "Không xác định";
-        $("ispOrg").textContent = d.org || "Không xác định";
-        $("city").textContent = d.city || "Không xác định";
-        $("region").textCont
+  safe(function(){
+    if (navigator.getBattery){
+      navigator.getBattery().then(function(b){
+        setText("batteryInfo", Math.round(b.level * 100) + "% · " + (b.charging ? "đang sạc" : "không sạc"));
+      }).catch(function(){ setText("batteryInfo", "Không xác định"); });
+    } else {
+      setText("batteryInfo", "Không hỗ trợ trên trình duyệt n
